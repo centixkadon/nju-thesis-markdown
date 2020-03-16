@@ -75,7 +75,7 @@ local sectionProperties = {
   <w:sdtPr><w:docPartObj><w:docPartGallery w:val="Table of Contents" /><w:docPartUnique /></w:docPartObj></w:sdtPr>
   <w:sdtContent>
     <w:p><w:pPr><w:pStyle w:val="TOCHeading" /></w:pPr><w:r><w:t xml:space="preserve">目录</w:t></w:r></w:p>
-    <w:p><w:r><w:fldChar w:fldCharType="begin" w:dirty="false" />
+    <w:p><w:r><w:fldChar w:fldCharType="begin" w:dirty="true" />
       <w:instrText xml:space="preserve">TOC \o "1-3" \h \z \u</w:instrText>
     <w:fldChar w:fldCharType="separate" /><w:fldChar w:fldCharType="end" /></w:r></w:p>
   </w:sdtContent>
