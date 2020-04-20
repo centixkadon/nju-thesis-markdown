@@ -1,7 +1,7 @@
 
 # nju-thesis-markdown
 
-Life is short, you need Markdown
+Life is short, you need Markdown.
 
 本项目提供了一个基于 [Pandoc](https://www.pandoc.org/) 导出 docx 南京大学学位论文的 Lua Filter 。该模板虽暂不严格遵循某些格式要求，但想必可以满足学士和硕士学位论文的需求，可帮助没有 LaTeX 基础且没有强迫症的南京大学同学们极其方便地排版出够用的学位论文。
 
