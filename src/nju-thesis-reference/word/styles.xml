@@ -27,7 +27,8 @@
     <w:link w:val="BodyTextChar" />
     <w:qFormat />
     <w:pPr>
-      <w:spacing w:beforeLines="150" w:before="360" w:afterLines="150" w:after="360" />
+      <w:spacing w:beforeLines="0" w:before="0" w:afterLines="0" w:after="0" w:lineRule="auto" w:line="360" />
+      <w:ind w:firstLineChars="200" w:leftChars="0" w:rightChars="0" />
     </w:pPr>
   </w:style>
   <w:style w:type="paragraph" w:customStyle="1" w:styleId="FirstParagraph">

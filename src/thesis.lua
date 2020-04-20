@@ -1,8 +1,4 @@
 
-local chapterNames = { "一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十", "二十一", "二十二", "二十三", "二十四", "二十五", "二十六", "溢出" }
-
-
-
 utf8.lower = pandoc.text.lower
 utf8.upper = pandoc.text.upper
 utf8.reverse = pandoc.text.reverse
@@ -118,7 +114,6 @@ return {
       end
       if elem.level == 1 then
         chapter = number[elem.level]
-        elem.content:insert(1, pandoc.Str(string.format("第%s章　", chapterNames[math.min(chapter, #chapterNames)])))
         elem.content = { pandoc.Span(elem.content, { id=string.format("chapter-%s", chapter) }) }
         return { pandoc.RawBlock("openxml", sectionProperties[math.min(chapter, #sectionProperties)]), elem }
       end
