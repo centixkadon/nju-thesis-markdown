@@ -56,7 +56,7 @@ Life is short, you need Markdown.
 - [x] 杂项
   - [x] 域支持
   - [x] 中文之间的换行不添加空格（中英文之间的换行也不添加，英文之间的换行添加）
-  - [ ] 字数统计
+  - [x] 字数统计
 
 ## 简单开始
 
@@ -102,13 +102,13 @@ Pandoc 直接支持 TeX 格式的公式，示例见 [Pandoc - Math Demos](https:
 
 Pandoc 的使用可以参考 [Pandoc - Pandoc User's Guide](https://www.pandoc.org/MANUAL.html) 。上一节使用的 Pandoc 命令行参数分别是以下作用：
 
-| 命令行参数 | 作用 |
-| :-- | :-- |
-| --lua-filter xxx | 指定 Lua Filter 文件 |
-| --filter xxx | 指定 Filter 程序 |
-| | 注意： --lua-filter 和 --filter 按顺序依次执行 |
-| --bibliography xxx | 指定参考文献文件 |
-| --reference-doc xxx | 指定格式文件 |
+| 命令行参数          | 作用                                           |
+|:--------------------|:-----------------------------------------------|
+| --lua-filter xxx    | 指定 Lua Filter 文件                           |
+| --filter xxx        | 指定 Filter 程序                               |
+|                     | 注意： --lua-filter 和 --filter 按顺序依次执行 |
+| --bibliography xxx  | 指定参考文献文件                               |
+| --reference-doc xxx | 指定格式文件                                   |
 
 更多命令行参数及其用法，参见 [Options](https://www.pandoc.org/MANUAL.html#options) 一章。
 

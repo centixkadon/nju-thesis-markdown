@@ -100,7 +100,33 @@ local sectionProperties = {
 </w:sectPr></w:pPr></w:p>]],
 }
 
+local word_number = 0
+
 return {
+  {
+    Str = function (elem)
+      for c in string.gmatch(elem.text, utf8.charpattern) do
+        if #c > 1 then
+          word_number = word_number + 1
+        end
+      end
+      if #utf8.sub(elem.text, 1, 1) == 1 then
+        word_number = word_number + 1
+      end
+      if #utf8.sub(elem.text, -1) == 1 then
+        word_number = word_number + 1
+      end
+      if #elem.text == utf8.len(elem.text) then
+        word_number = word_number - 1
+      end
+    end,
+
+    Pandoc = function (elem)
+      if pandoc.List{ "json" }:includes(FORMAT) then
+        print(string.format("word number: %q", word_number))
+      end
+    end,
+  },
   {
     Header = function (elem)
       number[elem.level] = number[elem.level] + 1
@@ -120,7 +146,7 @@ return {
     end,
 
     Para = function (elem)
-      if elem.content[1].tag == "Math" then
+      if elem.content[1].tag == "Math" and elem.content[1].mathtype == "DisplayMath" then
         number.eq = number.eq + 1
 
         local aligns = { "AlignLeft", "AlignRight" }
@@ -131,18 +157,23 @@ return {
         local formatstring = '<w:tcPr><w:tcW w:w="%q" w:type="pct"/><w:vAlign w:val="center"/></w:tcPr>'
         local tcpr = widthpcts:map(function (x) return pandoc.RawBlock("openxml", string.format(formatstring, x)) end)
         local math = pandoc.Para({ elem.content[1] })
-        local eqno = pandoc.Para({ pandoc.RawInline("field", string.format("{Seq equations|%q}", number.eq)) })
-
-        local ret = { pandoc.Table({}, aligns, widths, { {}, {} }, { { { tcpr[1], math }, { tcpr[2], eqno } } }) }
+        local eqno = {
+          pandoc.Str("("),
+          pandoc.RawInline("field", string.format('{={Section \\* MergeFormat|}-1|%q}', number[1])),
+          pandoc.Str("."),
+          pandoc.RawInline("field", string.format("{Seq equations|%q}", number.eq)),
+          pandoc.Str(")"),
+        }
         if elem.content[#elem.content].tag == "Str" then
           local identifier = elem.content[#elem.content].text
           if string.sub(identifier, 1, 5) == "{#eq:" and string.sub(identifier, -1) == "}" then
             identifier = string.sub(identifier, 3, -2)
-            numbers[identifier] = number.eq
-            ret = { pandoc.Div(ret, { id=identifier }) }
+            numbers[identifier] = string.format("(%s.%s)", number[1], number.eq)
+            eqno = { pandoc.Span(eqno, { id=identifier }) }
           end
         end
-        return ret
+
+        return { pandoc.Table({}, aligns, widths, { {}, {} }, { { { tcpr[1], math }, { tcpr[2], pandoc.Para(eqno) } } }) }
 
       elseif elem.content[1].tag == "Image" and not elem.content[2] then
         local image = elem.content[1]
@@ -195,10 +226,15 @@ return {
   {
     Cite = function (elem)
       local identifier = elem.citations[1].id
-      if string.sub(identifier, 1, 4) == "fig:" then
+      if string.sub(identifier, 1, 3) == "eq:" then
+        return {
+          pandoc.Str("式"),
+          pandoc.RawInline("field", string.format("{Ref %s|%s}", identifier, numbers[identifier] or "Error! Equation not defined")),
+        }
+      elseif string.sub(identifier, 1, 4) == "fig:" then
         return { pandoc.RawInline("field", string.format("{Ref %s \\r|%s}", identifier, numbers[identifier] or "Error! Figure not defined")) }
-      elseif string.sub(identifier, 1, 3) == "eq:" then
-        return { pandoc.RawInline("field", string.format("{Seq equations %s|%s}", identifier, numbers[identifier] or "Error! Equation not defined")) }
+      elseif string.sub(identifier, 1, 4) == "tbl:" then
+        return { pandoc.RawInline("field", string.format("{Ref %s \\r|%s}", identifier, numbers[identifier] or "Error! Table not defined")) }
       end
     end,
 
@@ -305,7 +341,7 @@ return {
               pandoc.walk_inline(inlines[i+1], { Str = function (elem) if not r then r = elem end end })
             end
 
-            if r and #utf8.sub(r.text, -1) > 1 then
+            if r and #utf8.sub(r.text, 1, 1) > 1 then
               inlines:remove(i)
             end
           end
