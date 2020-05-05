@@ -4,7 +4,7 @@
   <w:docDefaults>
     <w:rPrDefault>
       <w:rPr>
-        <w:rFonts w:ascii="Times New Roman" w:cs="Times New Roman" w:eastAsia="宋体" w:hAnsi="微软雅黑" />
+        <w:rFonts w:ascii="Times New Roman" w:cs="Times New Roman" w:eastAsia="宋体" w:hAnsi="Times New Roman" />
         <w:sz w:val="24" />
         <w:szCs w:val="24" />
         <w:lang w:val="en-US" w:eastAsia="en-US" w:bidi="ar-SA" />
@@ -43,6 +43,7 @@
     <w:qFormat />
     <w:pPr>
       <w:spacing w:beforeLines="30" w:afterLines="30" />
+      <w:ind w:firstLineChars="0" w:leftChars="0" w:rightChars="0" />
     </w:pPr>
   </w:style>
   <w:style w:type="paragraph" w:styleId="Title">

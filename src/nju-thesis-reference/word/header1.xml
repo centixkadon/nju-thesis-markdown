@@ -14,22 +14,7 @@
     </w:pPr>
     <w:r>
       <w:fldChar w:fldCharType="begin" />
-      <w:instrText xml:space="preserve">Ref "chapter-</w:instrText>
-
-      <w:fldChar w:fldCharType="begin" />
-      <w:instrText xml:space="preserve">=</w:instrText>
-
-      <w:fldChar w:fldCharType="begin" />
-      <w:instrText xml:space="preserve">Section \* MergeFormat</w:instrText>
-      <w:fldChar w:fldCharType="separate" />
-      <w:fldChar w:fldCharType="end" />
-
-      <w:instrText xml:space="preserve">-1</w:instrText>
-      <w:fldChar w:fldCharType="separate" />
-      <w:fldChar w:fldCharType="end" />
-
-      <w:instrText xml:space="preserve">" \* MergeFormat</w:instrText>
-      <w:fldChar w:fldCharType="separate" />
+      <w:instrText xml:space="preserve">StyleRef 1</w:instrText>
       <w:fldChar w:fldCharType="end" />
     </w:r>
   </w:p>
