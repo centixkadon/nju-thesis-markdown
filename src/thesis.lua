@@ -67,64 +67,64 @@ local number = { 0, 0, 0, 0, 0, 0, fig=0, lst=0, eq=0 }
 local numbers = {}
 
 local sectionProperties = {
-  [[<w:p><w:r><w:br w:type="page" /></w:r></w:p><w:sdt>
-  <w:sdtPr><w:docPartObj><w:docPartGallery w:val="Table of Contents" /><w:docPartUnique /></w:docPartObj></w:sdtPr>
-  <w:sdtContent>
-    <w:p><w:pPr><w:pStyle w:val="TOCHeading" /></w:pPr><w:r><w:t xml:space="preserve">目录</w:t></w:r></w:p>
-    <w:p><w:r><w:fldChar w:fldCharType="begin" w:dirty="true" />
-      <w:instrText xml:space="preserve">TOC \o "1-3" \h \z \u</w:instrText>
-    <w:fldChar w:fldCharType="separate" /><w:fldChar w:fldCharType="end" /></w:r></w:p>
-  </w:sdtContent>
-</w:sdt><w:p><w:pPr><w:sectPr>
-  <w:footerReference w:type="default" r:id="rId10" />
-  <w:pgSz w:w="11907" w:h="16840" />
-  <w:pgMar w:top="1440" w:right="1800" w:bottom="1440" w:left="1800" w:header="720" w:footer="720" w:gutter="0" />
-  <w:pgNumType w:fmt="upperRoman" w:start="0" />
-  <w:cols w:space="720" />
-  <w:titlePg />
-</w:sectPr></w:pPr></w:p>]],
-  [[<w:p><w:pPr><w:sectPr>
-  <w:headerReference w:type="default" r:id="rId9" />
-  <w:footerReference w:type="default" r:id="rId10" />
-  <w:pgSz w:w="11907" w:h="16840" />
-  <w:pgMar w:top="1440" w:right="1800" w:bottom="1440" w:left="1800" w:header="720" w:footer="720" w:gutter="0" />
-  <w:pgNumType w:fmt="demical" w:start="1" />
-  <w:cols w:space="720" />
-</w:sectPr></w:pPr></w:p>]],
-  [[<w:p><w:pPr><w:sectPr>
-  <w:headerReference w:type="default" r:id="rId9" />
-  <w:footerReference w:type="default" r:id="rId10" />
-  <w:pgSz w:w="11907" w:h="16840" />
-  <w:pgMar w:top="1440" w:right="1800" w:bottom="1440" w:left="1800" w:header="720" w:footer="720" w:gutter="0" />
-  <w:cols w:space="720" />
-</w:sectPr></w:pPr></w:p>]],
+  [[
+    <w:p><w:r><w:br w:type="page" /></w:r></w:p><w:sdt>
+      <w:sdtPr><w:docPartObj><w:docPartGallery w:val="Table of Contents" /><w:docPartUnique /></w:docPartObj></w:sdtPr>
+      <w:sdtContent>
+        <w:p><w:pPr><w:pStyle w:val="TOCHeading" /></w:pPr><w:r><w:t xml:space="preserve">目录</w:t></w:r></w:p>
+        <w:p><w:r><w:fldChar w:fldCharType="begin" w:dirty="true" />
+          <w:instrText xml:space="preserve">TOC \o "1-3" \h \z \u</w:instrText>
+        <w:fldChar w:fldCharType="separate" /><w:fldChar w:fldCharType="end" /></w:r></w:p>
+      </w:sdtContent>
+    </w:sdt><w:p><w:pPr><w:sectPr>
+      <w:footerReference w:type="default" r:id="rId10" />
+      <w:pgSz w:w="11907" w:h="16840" />
+      <w:pgMar w:top="1440" w:right="1800" w:bottom="1440" w:left="1800" w:header="720" w:footer="720" w:gutter="0" />
+      <w:pgNumType w:fmt="upperRoman" w:start="0" />
+      <w:cols w:space="720" />
+      <w:titlePg />
+    </w:sectPr></w:pPr></w:p>
+  ]],
+  [[
+    <w:p><w:pPr><w:sectPr>
+      <w:headerReference w:type="default" r:id="rId9" />
+      <w:footerReference w:type="default" r:id="rId10" />
+      <w:pgSz w:w="11907" w:h="16840" />
+      <w:pgMar w:top="1440" w:right="1800" w:bottom="1440" w:left="1800" w:header="720" w:footer="720" w:gutter="0" />
+      <w:pgNumType w:fmt="demical" w:start="1" />
+      <w:cols w:space="720" />
+    </w:sectPr></w:pPr></w:p>
+  ]],
+  [[
+    <w:p><w:pPr><w:sectPr>
+      <w:headerReference w:type="default" r:id="rId9" />
+      <w:footerReference w:type="default" r:id="rId10" />
+      <w:pgSz w:w="11907" w:h="16840" />
+      <w:pgMar w:top="1440" w:right="1800" w:bottom="1440" w:left="1800" w:header="720" w:footer="720" w:gutter="0" />
+      <w:cols w:space="720" />
+    </w:sectPr></w:pPr></w:p>
+  ]],
 }
+
+io.output("thesis.log")
 
 local word_number = 0
 
 return {
   {
     Str = function (elem)
+      local t = true
       for c in string.gmatch(elem.text, utf8.charpattern) do
-        if #c > 1 then
+        local tt = #c > 1
+        if t or tt then
           word_number = word_number + 1
         end
-      end
-      if #utf8.sub(elem.text, 1, 1) == 1 then
-        word_number = word_number + 1
-      end
-      if #utf8.sub(elem.text, -1) == 1 then
-        word_number = word_number + 1
-      end
-      if #elem.text == utf8.len(elem.text) then
-        word_number = word_number - 1
+        t = tt
       end
     end,
 
     Pandoc = function (elem)
-      if pandoc.List{ "json" }:includes(FORMAT) then
-        print(string.format("word number: %q", word_number))
-      end
+      io.write(string.format("word number: %q\n", word_number))
     end,
   },
   {
@@ -150,7 +150,7 @@ return {
         number.eq = number.eq + 1
 
         local aligns = { "AlignLeft", "AlignRight" }
-        local widthpcts = pandoc.List({ 90, 10 })
+        local widthpcts = pandoc.List({ 95, 5 })
         local width = widthpcts:reduce(function (sum, x) return sum + x end)
         local widths = widthpcts:map(function (value) return value / width end)
 
@@ -168,12 +168,16 @@ return {
           local identifier = elem.content[#elem.content].text
           if string.sub(identifier, 1, 5) == "{#eq:" and string.sub(identifier, -1) == "}" then
             identifier = string.sub(identifier, 3, -2)
-            numbers[identifier] = string.format("(%s.%s)", number[1], number.eq)
+            if numbers[identifier] then
+              io.write(string.format("bookmark exist: %q\n", identifier))
+            else
+              numbers[identifier] = string.format("(%s.%s)", number[1], number.eq)
+            end
             eqno = { pandoc.Span(eqno, { id=identifier }) }
           end
         end
 
-        return { pandoc.Table({}, aligns, widths, { {}, {} }, { { { tcpr[1], math }, { tcpr[2], pandoc.Para(eqno) } } }) }
+        return { pandoc.Table({}, aligns, widths, { {}, {} }, { { { tcpr[1], math }, { tcpr[2], pandoc.Para(eqno) } }, { {}, {} } }) }
 
       elseif elem.content[1].tag == "Image" and not elem.content[2] then
         local image = elem.content[1]
@@ -351,6 +355,20 @@ return {
     end,
 
   },
+  {
+    Div = function (elem)
+      if utf8.len(elem.identifier) > 40 then
+        io.write(string.format("bookmark too long: %q\n", elem.identifier))
+      end
+    end,
+
+    Span = function (elem)
+      if utf8.len(elem.identifier) > 40 then
+        io.write(string.format("bookmark too long: %q\n", elem.identifier))
+      end
+    end,
+
+  }
 }
 
 end -- docx json
