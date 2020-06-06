@@ -14,7 +14,7 @@ Life is short, you need Markdown.
 
 ## 参考的格式要求
 
-- [本科毕业论文工作手册](https://jw.nju.edu.cn/22/24/c24683a467492/page.htm)
+- [2020届本科毕业论文工作手册](https://jw.nju.edu.cn/22/24/c24683a467492/page.htm)
 - [博士（硕士）学位论文编写格式规定（试行）](https://grawww.nju.edu.cn/ec/4e/c1040a60494/page.htm)
 
 ## 项目进展
@@ -41,17 +41,17 @@ Life is short, you need Markdown.
     - [x] 编号
     - [x] 图、公式引用
     - [ ] 表引用
-  - [ ] 参考文献
-    - [ ] 规范格式
-    - [x] 导出 docx 后用其它文献管理软件（如 EndNote ）
+  - [x] 参考文献
+    - [x] 规范格式
+    - [x] 导出 docx 后用其它文献管理软件（如 Zotero 、 EndNote ）
   - [x] 科研成果
   - [x] 致谢
   - [x] 规范要求
     - [x] 字体、字号
     - [x] 页眉
     - [x] 正文页码
-- [ ] 附录部分（非必要）
-  - [ ] 附录页码（接正文页码）
+- [x] 附录部分（非必要）
+  - [x] 附录页码（接正文页码）
 - [ ] 结尾部分（非必要）
 - [x] 杂项
   - [x] 域支持
