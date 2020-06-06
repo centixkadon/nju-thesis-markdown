@@ -2,21 +2,25 @@
 <w:styles xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" 
   xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
   <w:docDefaults>
+    <w:pPrDefault>
+      <w:pPr>
+        <w:jc w:val="left" />
+        <w:spacing w:beforeLines="0" w:before="0" w:afterLines="0" w:after="0" w:lineRule="auto" w:line="360" />
+        <w:ind w:firstLineChars="0" w:leftChars="0" w:rightChars="0" />
+      </w:pPr>
+    </w:pPrDefault>
     <w:rPrDefault>
       <w:rPr>
+        <w:lang w:val="en-US" w:eastAsia="zh-CN" w:bidi="ar-SA" />
         <w:rFonts w:ascii="Times New Roman" w:cs="Times New Roman" w:eastAsia="宋体" w:hAnsi="Times New Roman" />
         <w:sz w:val="24" />
         <w:szCs w:val="24" />
-        <w:lang w:val="en-US" w:eastAsia="en-US" w:bidi="ar-SA" />
       </w:rPr>
     </w:rPrDefault>
-    <w:pPrDefault>
-      <w:pPr>
-        <w:spacing w:beforeLines="0" w:before="0" w:afterLines="0" w:after="0" />
-      </w:pPr>
-    </w:pPrDefault>
   </w:docDefaults>
   <w:latentStyles w:defLockedState="0" w:defUIPriority="0" w:defSemiHidden="0" w:defUnhideWhenUsed="0" w:defQFormat="0" w:count="276" />
+
+  <!-- ================================================================ 正文 -->
   <w:style w:type="paragraph" w:default="1" w:styleId="Normal">
     <w:name w:val="Normal" />
     <w:qFormat />
@@ -27,8 +31,8 @@
     <w:link w:val="BodyTextChar" />
     <w:qFormat />
     <w:pPr>
-      <w:spacing w:beforeLines="0" w:before="0" w:afterLines="0" w:after="0" w:lineRule="auto" w:line="360" />
-      <w:ind w:firstLineChars="200" w:leftChars="0" w:rightChars="0" />
+      <w:jc w:val="both" />
+      <w:ind w:firstLineChars="200" />
     </w:pPr>
   </w:style>
   <w:style w:type="paragraph" w:customStyle="1" w:styleId="FirstParagraph">
@@ -37,6 +41,7 @@
     <w:next w:val="BodyText" />
     <w:qFormat />
   </w:style>
+
   <w:style w:type="paragraph" w:customStyle="1" w:styleId="Compact">
     <w:name w:val="Compact" />
     <w:basedOn w:val="BodyText" />
@@ -46,6 +51,9 @@
       <w:ind w:firstLineChars="0" w:leftChars="0" w:rightChars="0" />
     </w:pPr>
   </w:style>
+
+  <!-- ================================================================ 前置部分 -->
+  <!-- ================================================================ 封面 -->
   <w:style w:type="paragraph" w:styleId="Title">
     <w:name w:val="Title" />
     <w:basedOn w:val="Normal" />
@@ -100,13 +108,14 @@
       <w:jc w:val="center" />
     </w:pPr>
   </w:style>
+
+  <!-- ================================================================ 摘要 -->
   <w:style w:type="paragraph" w:customStyle="1" w:styleId="Abstract">
     <w:name w:val="Abstract" />
     <w:basedOn w:val="Normal" />
     <w:next w:val="BodyText" />
     <w:qFormat />
     <w:pPr>
-      <w:keepNext />
       <w:keepLines />
       <w:spacing w:beforeLines="150" w:afterLines="150" />
     </w:pPr>
@@ -115,14 +124,64 @@
       <w:szCs w:val="20" />
     </w:rPr>
   </w:style>
-  <w:style w:type="paragraph" w:styleId="Bibliography">
-    <w:name w:val="Bibliography" />
-    <w:basedOn w:val="Normal" />
-    <w:next w:val="Bibliography" />
+
+  <!-- ================================================================ 目录 -->
+  <w:style w:type="paragraph" w:styleId="TOCHeading">
+    <w:name w:val="TOC Heading" />
+    <w:basedOn w:val="Heading1" />
+    <w:next w:val="BodyText" />
+    <w:uiPriority w:val="39" />
+    <w:unhideWhenUsed />
     <w:qFormat />
-    <w:pPr />
-    <w:rPr />
+    <w:pPr>
+      <w:outlineLvl w:val="9" />
+    </w:pPr>
+    <w:rPr>
+      <w:rFonts w:ascii="Times New Roman" w:cs="Times New Roman" w:eastAsia="宋体" w:hAnsi="Times New Roman" />
+      <w:sz w:val="32" />
+      <w:szCs w:val="32" />
+    </w:rPr>
   </w:style>
+  <w:style w:type="paragraph" w:styleId="TOC1">
+    <w:name w:val="TOC 1" />
+    <w:basedOn w:val="Normal" />
+    <w:next w:val="Normal" />
+    <w:autoRedefine />
+    <w:uiPriority w:val="39" />
+    <w:unhideWhenUsed />
+    <w:qFormat />
+    <w:rPr>
+      <w:rFonts w:ascii="Times New Roman" w:cs="Times New Roman" w:eastAsia="黑体" w:hAnsi="Times New Roman" />
+      <w:sz w:val="28" />
+    </w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="TOC2">
+    <w:name w:val="TOC 2" />
+    <w:basedOn w:val="TOC1" />
+    <w:next w:val="Normal" />
+    <w:pPr>
+      <w:ind w:leftChars="200" />
+    </w:pPr>
+    <w:rPr>
+      <w:rFonts w:ascii="Times New Roman" w:cs="Times New Roman" w:eastAsia="宋体" w:hAnsi="Times New Roman" />
+      <w:sz w:val="24" />
+    </w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="TOC3">
+    <w:name w:val="TOC 3" />
+    <w:basedOn w:val="TOC2" />
+    <w:next w:val="Normal" />
+    <w:pPr>
+      <w:ind w:leftChars="400" />
+    </w:pPr>
+    <w:rPr>
+      <w:rFonts w:ascii="Times New Roman" w:cs="Times New Roman" w:eastAsia="宋体" w:hAnsi="Times New Roman" />
+      <w:sz w:val="24" />
+    </w:rPr>
+  </w:style>
+
+  <!-- ================================================================ 主体部分 -->
+  <!-- ================================================================ 序号 -->
   <w:style w:type="paragraph" w:styleId="Heading1">
     <w:name w:val="Heading 1" />
     <w:basedOn w:val="Normal" />
@@ -133,7 +192,7 @@
       <w:keepNext />
       <w:keepLines />
       <w:numPr>
-        <w:numId w:val="1"/>
+        <w:numId w:val="1" />
       </w:numPr>
       <w:spacing w:beforeLines="300" w:afterLines="150" />
       <w:jc w:val="center" />
@@ -158,8 +217,8 @@
       <w:keepNext />
       <w:keepLines />
       <w:numPr>
-        <w:numId w:val="1"/>
-        <w:ilvl w:val="1"/>
+        <w:numId w:val="1" />
+        <w:ilvl w:val="1" />
       </w:numPr>
       <w:spacing w:beforeLines="300" w:afterLines="150" />
       <w:outlineLvl w:val="1" />
@@ -183,8 +242,8 @@
       <w:keepNext />
       <w:keepLines />
       <w:numPr>
-        <w:numId w:val="1"/>
-        <w:ilvl w:val="2"/>
+        <w:numId w:val="1" />
+        <w:ilvl w:val="2" />
       </w:numPr>
       <w:spacing w:beforeLines="300" w:afterLines="150" />
       <w:outlineLvl w:val="2" />
@@ -208,8 +267,8 @@
       <w:keepNext />
       <w:keepLines />
       <w:numPr>
-        <w:numId w:val="1"/>
-        <w:ilvl w:val="3"/>
+        <w:numId w:val="1" />
+        <w:ilvl w:val="3" />
       </w:numPr>
       <w:spacing w:beforeLines="300" w:afterLines="150" />
       <w:outlineLvl w:val="3" />
@@ -233,8 +292,8 @@
       <w:keepNext />
       <w:keepLines />
       <w:numPr>
-        <w:numId w:val="1"/>
-        <w:ilvl w:val="4"/>
+        <w:numId w:val="1" />
+        <w:ilvl w:val="4" />
       </w:numPr>
       <w:spacing w:beforeLines="150" w:afterLines="150" />
       <w:outlineLvl w:val="4" />
@@ -256,8 +315,8 @@
       <w:keepNext />
       <w:keepLines />
       <w:numPr>
-        <w:numId w:val="1"/>
-        <w:ilvl w:val="5"/>
+        <w:numId w:val="1" />
+        <w:ilvl w:val="5" />
       </w:numPr>
       <w:spacing w:beforeLines="150" w:afterLines="150" />
       <w:outlineLvl w:val="5" />
@@ -279,8 +338,8 @@
       <w:keepNext />
       <w:keepLines />
       <w:numPr>
-        <w:numId w:val="1"/>
-        <w:ilvl w:val="8"/>
+        <w:numId w:val="1" />
+        <w:ilvl w:val="8" />
       </w:numPr>
       <w:spacing w:beforeLines="150" w:afterLines="150" />
       <w:outlineLvl w:val="8" />
@@ -327,6 +386,59 @@
       <w:szCs w:val="24" />
     </w:rPr>
   </w:style>
+
+  <!-- ================================================================ 正文 -->
+  <w:style w:type="paragraph" w:styleId="Caption">
+    <w:name w:val="Caption" />
+    <w:basedOn w:val="Normal" />
+    <w:link w:val="BodyTextChar" />
+  </w:style>
+  <w:style w:type="paragraph" w:customStyle="1" w:styleId="Figure">
+    <w:name w:val="Figure" />
+    <w:basedOn w:val="Normal" />
+  </w:style>
+  <w:style w:type="paragraph" w:customStyle="1" w:styleId="ImageCaption">
+    <w:name w:val="Image Caption" />
+    <w:basedOn w:val="Caption" />
+    <w:pPr>
+      <w:numPr>
+        <w:numId w:val="1" />
+        <w:ilvl w:val="6" />
+      </w:numPr>
+      <w:spacing w:beforeLines="0" w:afterLines="150" />
+      <w:jc w:val="center" />
+    </w:pPr>
+  </w:style>
+  <w:style w:type="paragraph" w:customStyle="1" w:styleId="CaptionedFigure">
+    <w:name w:val="Captioned Figure" />
+    <w:basedOn w:val="Figure" />
+    <w:pPr>
+      <w:keepNext />
+      <w:spacing w:beforeLines="150" w:afterLines="0" />
+      <w:jc w:val="center" />
+    </w:pPr>
+  </w:style>
+  <w:style w:type="paragraph" w:customStyle="1" w:styleId="TableCaption">
+    <w:name w:val="Table Caption" />
+    <w:basedOn w:val="Caption" />
+    <w:pPr>
+      <w:keepNext />
+      <w:numPr>
+        <w:numId w:val="1" />
+        <w:ilvl w:val="7" />
+      </w:numPr>
+      <w:spacing w:beforeLines="150" w:afterLines="0" />
+      <w:jc w:val="center" />
+    </w:pPr>
+  </w:style>
+
+  <!-- ================================================================ 参考文献 -->
+  <w:style w:type="paragraph" w:styleId="Bibliography">
+    <w:name w:val="Bibliography" />
+    <w:basedOn w:val="Normal" />
+    <w:next w:val="Bibliography" />
+    <w:qFormat />
+  </w:style>
   <w:style w:type="paragraph" w:styleId="BlockText">
     <w:name w:val="Block Text" />
     <w:basedOn w:val="BodyText" />
@@ -347,27 +459,7 @@
     <w:unhideWhenUsed />
     <w:qFormat />
   </w:style>
-  <w:style w:type="character" w:default="1" w:styleId="DefaultParagraphFont">
-    <w:name w:val="Default Paragraph Font" />
-    <w:semiHidden />
-    <w:unhideWhenUsed />
-  </w:style>
-  <w:style w:type="table" w:default="1" w:styleId="Table">
-    <w:name w:val="Table" />
-    <w:basedOn w:val="TableNormal" />
-    <w:semiHidden />
-    <w:unhideWhenUsed />
-    <w:qFormat />
-    <w:tblPr>
-      <w:tblInd w:w="0" w:type="dxa" />
-      <w:tblCellMar>
-        <w:top w:w="0" w:type="dxa" />
-        <w:left w:w="108" w:type="dxa" />
-        <w:bottom w:w="0" w:type="dxa" />
-        <w:right w:w="108" w:type="dxa" />
-      </w:tblCellMar>
-    </w:tblPr>
-  </w:style>
+
   <w:style w:type="paragraph" w:customStyle="1" w:styleId="DefinitionTerm">
     <w:name w:val="Definition Term" />
     <w:basedOn w:val="Normal" />
@@ -385,49 +477,8 @@
     <w:name w:val="Definition" />
     <w:basedOn w:val="Normal" />
   </w:style>
-  <w:style w:type="paragraph" w:styleId="Caption">
-    <w:name w:val="Caption" />
-    <w:basedOn w:val="Normal" />
-    <w:link w:val="BodyTextChar" />
-    <w:pPr>
-      <w:spacing w:beforeLines="0" w:afterLines="100" />
-    </w:pPr>
-  </w:style>
-  <w:style w:type="paragraph" w:customStyle="1" w:styleId="TableCaption">
-    <w:name w:val="Table Caption" />
-    <w:basedOn w:val="Caption" />
-    <w:pPr>
-      <w:keepNext />
-      <w:numPr>
-        <w:numId w:val="1"/>
-        <w:ilvl w:val="7"/>
-      </w:numPr>
-      <w:jc w:val="center" />
-    </w:pPr>
-  </w:style>
-  <w:style w:type="paragraph" w:customStyle="1" w:styleId="ImageCaption">
-    <w:name w:val="Image Caption" />
-    <w:basedOn w:val="Caption" />
-    <w:pPr>
-      <w:numPr>
-        <w:numId w:val="1"/>
-        <w:ilvl w:val="6"/>
-      </w:numPr>
-      <w:jc w:val="center" />
-    </w:pPr>
-  </w:style>
-  <w:style w:type="paragraph" w:customStyle="1" w:styleId="Figure">
-    <w:name w:val="Figure" />
-    <w:basedOn w:val="Normal" />
-  </w:style>
-  <w:style w:type="paragraph" w:customStyle="1" w:styleId="CaptionedFigure">
-    <w:name w:val="Captioned Figure" />
-    <w:basedOn w:val="Figure" />
-    <w:pPr>
-      <w:keepNext />
-      <w:jc w:val="center" />
-    </w:pPr>
-  </w:style>
+
+  <!-- ================================================================ 页眉页脚 -->
   <w:style w:type="paragraph" w:styleId="Header">
     <w:name w:val="Header" />
     <w:basedOn w:val="Normal" />
@@ -453,6 +504,12 @@
       <w:sz w:val="18" />
       <w:szCs w:val="18" />
     </w:rPr>
+  </w:style>
+
+  <w:style w:type="character" w:default="1" w:styleId="DefaultParagraphFont">
+    <w:name w:val="Default Paragraph Font" />
+    <w:semiHidden />
+    <w:unhideWhenUsed />
   </w:style>
   <w:style w:type="character" w:customStyle="1" w:styleId="BodyTextChar">
     <w:name w:val="Body Text Char" />
@@ -491,21 +548,24 @@
       <w:color w:val="4F81BD" w:themeColor="accent1" />
     </w:rPr>
   </w:style>
-  <w:style w:type="paragraph" w:styleId="TOCHeading">
-    <w:name w:val="TOC Heading" />
-    <w:basedOn w:val="Heading1" />
-    <w:next w:val="BodyText" />
-    <w:uiPriority w:val="39" />
+
+  <!-- ================================================================ 表格 -->
+  <w:style w:type="table" w:default="1" w:styleId="Table">
+    <w:name w:val="Table" />
+    <w:basedOn w:val="TableNormal" />
+    <w:semiHidden />
     <w:unhideWhenUsed />
     <w:qFormat />
-    <w:pPr>
-      <w:spacing w:beforeLines="100" w:line="259" w:lineRule="auto" />
-      <w:outlineLvl w:val="9" />
-    </w:pPr>
-    <w:rPr>
-      <w:rFonts w:asciiTheme="majorHAnsi" w:eastAsiaTheme="majorEastAsia" w:hAnsiTheme="majorHAnsi" w:cstheme="majorBidi" />
-      <w:b w:val="0" />
-      <w:bCs w:val="0" />
-    </w:rPr>
+    <w:tblPr>
+      <w:jc w:val="center" />
+      <w:tblInd w:w="0" w:type="dxa" />
+      <w:tblCellMar>
+        <w:top w:w="0" w:type="dxa" />
+        <w:left w:w="108" w:type="dxa" />
+        <w:bottom w:w="0" w:type="dxa" />
+        <w:right w:w="108" w:type="dxa" />
+      </w:tblCellMar>
+    </w:tblPr>
   </w:style>
+
 </w:styles>
