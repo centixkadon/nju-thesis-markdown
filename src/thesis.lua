@@ -154,7 +154,7 @@ return {
         local width = widthpcts:reduce(function (sum, x) return sum + x end)
         local widths = widthpcts:map(function (value) return value / width end)
 
-        local formatstring = '<w:tcPr><w:tcW w:w="%q" w:type="pct"/><w:vAlign w:val="center"/></w:tcPr>'
+        local formatstring = '<w:tcPr><w:tcW w:w="%q" w:type="pct"/></w:tcPr>'
         local tcpr = widthpcts:map(function (x) return pandoc.RawBlock("openxml", string.format(formatstring, x)) end)
         local math = pandoc.Para({ elem.content[1] })
         local eqno = {
@@ -177,7 +177,7 @@ return {
           end
         end
 
-        return { pandoc.Table({}, aligns, widths, { {}, {} }, { { { tcpr[1], math }, { tcpr[2], pandoc.Para(eqno) } }, { {}, {} } }) }
+        return { pandoc.Table({}, aligns, widths, { {}, {} }, { { { tcpr[1], pandoc.Div({ math }, { ["custom-style"]="Equation" }) }, { tcpr[2], pandoc.Div({ pandoc.Para(eqno) }, { ["custom-style"]="Equation Caption" }) } } }) }
 
       elseif elem.content[1].tag == "Image" and not elem.content[2] then
         local image = elem.content[1]

@@ -41,15 +41,10 @@
     <w:next w:val="BodyText" />
     <w:qFormat />
   </w:style>
-
   <w:style w:type="paragraph" w:customStyle="1" w:styleId="Compact">
     <w:name w:val="Compact" />
-    <w:basedOn w:val="BodyText" />
+    <w:basedOn w:val="Normal" />
     <w:qFormat />
-    <w:pPr>
-      <w:spacing w:beforeLines="30" w:afterLines="30" />
-      <w:ind w:firstLineChars="0" w:leftChars="0" w:rightChars="0" />
-    </w:pPr>
   </w:style>
 
   <!-- ================================================================ 前置部分 -->
@@ -387,7 +382,7 @@
     </w:rPr>
   </w:style>
 
-  <!-- ================================================================ 正文 -->
+  <!-- ================================================================ 图表式 -->
   <w:style w:type="paragraph" w:styleId="Caption">
     <w:name w:val="Caption" />
     <w:basedOn w:val="Normal" />
@@ -429,6 +424,17 @@
       </w:numPr>
       <w:spacing w:beforeLines="150" w:afterLines="0" />
       <w:jc w:val="center" />
+    </w:pPr>
+  </w:style>
+  <w:style w:type="paragraph" w:customStyle="1" w:styleId="EquationCaption">
+    <w:name w:val="Equation Caption" />
+    <w:basedOn w:val="Caption" />
+  </w:style>
+  <w:style w:type="paragraph" w:customStyle="1" w:styleId="Equation">
+    <w:name w:val="Equation" />
+    <w:basedOn w:val="Normal" />
+    <w:pPr>
+      <w:spacing w:beforeLines="100" w:afterLines="100" />
     </w:pPr>
   </w:style>
 
@@ -566,6 +572,9 @@
         <w:right w:w="108" w:type="dxa" />
       </w:tblCellMar>
     </w:tblPr>
+    <w:tcPr>
+      <w:vAlign w:val="center" />
+    </w:tcPr>
   </w:style>
 
 </w:styles>
