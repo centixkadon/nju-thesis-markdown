@@ -7,6 +7,8 @@ local configuration = {
   "section",
   "utility",
   "bookmark_length",
+
+  "cover",
 }
 
 -- -----------------------------------------------------------------------------
@@ -63,16 +65,83 @@ function table.tostring(dict)
   end
 end
 
+function table.rep(elem, n)
+  local list = {}
+  for i = 1,n do
+    table.insert(list, elem)
+  end
+  return list
+end
+
 
 function pandoc.List:reduce(func, sum)
-  if not sum then
-    sum = 0
-  end
+  sum = sum or 0
   for i, value in ipairs(self) do
     sum = func(sum, value)
   end
   return sum
 end
+
+function pandoc.List:erase(i, j)
+  i = i or 1
+  j = j or #self
+  for k = math.min(j, #self), i, -1 do
+    self:remove(k)
+  end
+end
+
+
+function pandoctostring(elem)
+  if elem.tag == "Space" then
+    return " "
+  elseif elem.tag == "Str" then
+    return elem.text
+  elseif elem.tag == "Quoted" then
+    local s = ""
+    for i = 1, #elem.content do
+      s = s..pandoctostring(elem.content[i])
+    end
+    if elem.quotetype == "SingleQuote" then return "'"..s.."'" end
+    if elem.quotetype == "DoubleQuote" then return '"'..s..'"' end
+    return s
+  end
+  return ""
+end
+
+function inlinestoattr(inlines)
+  local s = ""
+  for i = #inlines, 1, -1 do
+    s = pandoctostring(inlines[i])..s
+
+    if string.sub(s,1,1) == "{" then
+      if string.sub(s,-1) == "}" then
+
+        s = s:sub(2,-2)
+        local identifier = s:match("#([%w_]+)")
+        local classes = {}
+        local attributes = {}
+        for class in s:gmatch("%.([%w_]+)") do table.insert(classes, class) end
+        for key, value in s:gmatch("([%w_]+)=([%w_]+)") do attributes[key] = value end
+        for key, value in s:gmatch('([%w_]+)="([%w%s_]+)"') do attributes[key] = value end
+
+        inlines:erase(i)
+        for i = i-1, 1, -1 do
+          if inlines[i].tag == "Space" then
+            inlines:remove()
+          else
+            break
+          end
+        end
+
+        return pandoc.Attr(identifier, classes, attributes)
+      end
+
+      break
+    end
+  end
+
+end
+
 
 
 
@@ -100,6 +169,86 @@ if configuration:includes("word_count") then
     Pandoc = function (elem)
       io.write(string.format("word number: %q\n", word_number))
     end,
+  }
+end
+
+if configuration:includes("cover") then
+  local metavalues = {}
+  filters:insert{
+    Meta = function (elem)
+      pandoc.List{ "title", "author", "specialization", "major", "mentor", "date", "number", "title-en" }:map(function (key)
+        if elem[key] then
+          if elem[key].tag == "MetaInlines" then metavalues[key] = pandoc.List(elem[key]) end
+          elem[key] = nil
+        end
+      end)
+
+      pandoc.List{ "title-cover", "author-cover", "specialization-cover", "major-cover", "mentor-cover", "abstract", "abstract-en" }:map(function (key)
+        if elem[key] then
+          if elem[key].tag == "MetaBlocks" then metavalues[key] = pandoc.List(elem[key]) end
+          if elem[key].tag == "MetaInlines" then metavalues[key] = pandoc.List{ pandoc.Para(pandoc.List(elem[key])) } end
+          elem[key] = nil
+        end
+      end)
+
+      pandoc.List{ { "msg-sign", "                                      （签字）" } }:map(function (x)
+        metavalues[x[1]] = pandoc.List{ pandoc.Str(x[2]) }
+      end)
+
+      return elem
+
+    end,
+
+    Pandoc = function (elem)
+      local labelcell = function (str, style, width)
+        return {
+          pandoc.RawBlock("openxml", string.format('<w:tcPr><w:tcMar><w:right w:w="0" w:type="dxa" /></w:tcMar><w:tcW w:w="%q" w:type="pct" /></w:tcPr><w:p><w:pPr><w:pStyle w:val="%s" /><w:jc w:val="distribute" /></w:pPr><w:r><w:rPr><w:spacing w:val="-200" /></w:rPr><w:t>%s</w:t></w:r><w:r><w:t>%s</w:t></w:r></w:p>', width, string.gsub(style, "%s", ""), utf8.sub(str,1,-2), utf8.sub(str,-1)))
+        }
+      end
+      local textcell = function (list, width)
+        local textpr = pandoc.RawBlock("openxml", string.format('<w:tcPr><w:tcMar><w:left w:w="0" w:type="dxa" /></w:tcMar><w:tcW w:w="%q" w:type="pct" /></w:tcPr>', width))
+        local texttab = pandoc.RawInline("openxml", string.format('<w:r><w:tab /></w:r>'))
+        list = list:clone()
+        list:insert(1, texttab)
+        list:insert(texttab)
+        return { textpr, pandoc.Para(list) }
+      end
+
+      local message = function (tablepairs, tablesep, widthpcts, styles)
+        local rows = pandoc.List{}
+        for _, list in ipairs(tablepairs) do
+          local label, text = table.unpack(list)
+          for _, value in ipairs(metavalues[text.."-cover"] or { pandoc.Para(metavalues[text]) }) do
+            rows:insert({ labelcell(label, styles[1], widthpcts[1]), {
+              pandoc.RawBlock("openxml", string.format('<w:tcPr><w:tcMar><w:left w:w="0" w:type="dxa" /><w:right w:w="0" w:type="dxa" /></w:tcMar><w:tcW w:w="%q" w:type="pct" /></w:tcPr><w:p><w:pPr><w:pStyle w:val="%s" /></w:pPr><w:r><w:t xml:space="preserve">%s</w:t></w:r></w:p>', widthpcts[2], string.gsub(styles[1], "%s", ""),tablesep))
+            }, textcell(value.content, widthpcts[3]) })
+            label = ""
+          end
+        end
+        return pandoc.Div(pandoc.Table({}, { "AlignDefault", "AlignDefault", "AlignDefault" }, pandoc.List(widthpcts):map(function (x) return x / 100 end), { {}, {}, {} }, rows), { ["custom-style"]=styles[2] })
+      end
+
+      local cover = pandoc.List{
+        pandoc.Para({ pandoc.Space() }),
+        pandoc.Para({ pandoc.Space() }),
+        pandoc.Div({
+          pandoc.Para({ pandoc.Str("研 究 生 毕 业 论 文") }),
+          pandoc.Para({ pandoc.Str("（申请硕士学位）") }),
+        }, { ["custom-style"]="Title" }),
+        message({ { "论文题目", "title" }, { "作者姓名", "author" }, { "学科、专业名称", "specialization" }, { "研究方向", "major" }, { "指导老师", "mentor" } }, "", { 23, 5, 60 }, { "Front Cover Label", "Front Cover Text" }),
+        pandoc.Para({ pandoc.Space() }),
+        pandoc.Para({ pandoc.Space() }),
+        pandoc.Div({ pandoc.Para(metavalues["date"]) }, { ["custom-style"]="Date" }),
+        pandoc.Para({ pandoc.RawInline("openxml", '<w:br w:type="page" />') }),
+        pandoc.Para(table.rep(pandoc.LineBreak(), 25)),
+        message({ { "学号", "number" }, { "论文答辩日期", "date" }, { "指导教师", "msg-sign" } }, "：", { 23, 5, 72 }, { "Inside Front Cover Label", "Inside Front Cover Text" }),
+      }
+
+      cover:extend(elem.blocks)
+      elem.blocks = cover
+      return elem
+    end,
+
   }
 end
 

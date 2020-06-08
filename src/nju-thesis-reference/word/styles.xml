@@ -55,16 +55,15 @@
     <w:next w:val="BodyText" />
     <w:qFormat />
     <w:pPr>
-      <w:keepNext />
-      <w:keepLines />
-      <w:spacing w:beforeLines="300" w:afterLines="150" />
+      <w:spacing w:line="336" />
       <w:jc w:val="center" />
     </w:pPr>
     <w:rPr>
+      <w:rFonts w:ascii="Times New Roman" w:cs="Times New Roman" w:eastAsia="楷体" w:hAnsi="Times New Roman" />
+      <w:sz w:val="52" />
+      <w:szCs w:val="52" />
       <w:b />
       <w:bCs />
-      <w:sz w:val="32" />
-      <w:szCs w:val="32" />
     </w:rPr>
   </w:style>
   <w:style w:type="paragraph" w:styleId="Subtitle">
@@ -73,8 +72,6 @@
     <w:next w:val="BodyText" />
     <w:qFormat />
     <w:pPr>
-      <w:keepNext />
-      <w:keepLines />
       <w:spacing w:beforeLines="150" w:afterLines="150" />
       <w:jc w:val="center" />
     </w:pPr>
@@ -88,8 +85,6 @@
     <w:next w:val="BodyText" />
     <w:qFormat />
     <w:pPr>
-      <w:keepNext />
-      <w:keepLines />
       <w:jc w:val="center" />
     </w:pPr>
   </w:style>
@@ -98,10 +93,82 @@
     <w:next w:val="BodyText" />
     <w:qFormat />
     <w:pPr>
-      <w:keepNext />
-      <w:keepLines />
       <w:jc w:val="center" />
     </w:pPr>
+    <w:rPr>
+      <w:rFonts w:ascii="Times New Roman" w:cs="Times New Roman" w:eastAsia="楷体" w:hAnsi="Times New Roman" />
+      <w:sz w:val="28" />
+      <w:szCs w:val="28" />
+      <w:b />
+      <w:bCs />
+    </w:rPr>
+  </w:style>
+
+  <w:style w:type="paragraph" w:customStyle="1" w:styleId="Cover">
+    <w:name w:val="Cover" />
+    <w:basedOn w:val="Normal" />
+    <w:qFormat />
+    <w:rPr>
+      <w:rFonts w:ascii="Times New Roman" w:cs="Times New Roman" w:eastAsia="楷体" w:hAnsi="Times New Roman" />
+      <w:sz w:val="32" />
+      <w:szCs w:val="32" />
+    </w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:customStyle="1" w:styleId="FrontCoverLabel">
+    <w:name w:val="Front Cover Label" />
+    <w:basedOn w:val="Cover" />
+    <w:pPr>
+      <w:jc w:val="distribute" />
+    </w:pPr>
+    <w:rPr>
+      <w:b />
+      <w:bCs />
+    </w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:customStyle="1" w:styleId="FrontCoverText">
+    <w:name w:val="Front Cover Text" />
+    <w:basedOn w:val="Cover" />
+    <w:pPr>
+      <w:jc w:val="left" />
+      <w:tabs>
+        <w:tab w:val="center" w:pos="2520" />
+        <w:tab w:val="right" w:pos="5040" />
+      </w:tabs>
+    </w:pPr>
+    <w:rPr>
+      <w:u w:val="single" />
+      <w:uCs w:val="single" />
+    </w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:customStyle="1" w:styleId="InsideFrontCoverLabel">
+    <w:name w:val="Inside Front Cover Label" />
+    <w:basedOn w:val="Cover" />
+    <w:pPr>
+      <w:jc w:val="distribute" />
+    </w:pPr>
+    <w:rPr>
+      <w:sz w:val="30" />
+      <w:szCs w:val="30" />
+      <w:b />
+      <w:bCs />
+    </w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:customStyle="1" w:styleId="InsideFrontCoverText">
+    <w:name w:val="Inside Front Cover Text" />
+    <w:basedOn w:val="Cover" />
+    <w:pPr>
+      <w:jc w:val="left" />
+      <w:tabs>
+        <w:tab w:val="left" w:pos="1" />
+        <w:tab w:val="right" w:pos="5040" />
+      </w:tabs>
+    </w:pPr>
+    <w:rPr>
+      <w:sz w:val="30" />
+      <w:szCs w:val="30" />
+      <w:b />
+      <w:bCs />
+    </w:rPr>
   </w:style>
 
   <!-- ================================================================ 摘要 -->
