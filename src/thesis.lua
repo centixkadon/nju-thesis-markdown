@@ -3,12 +3,11 @@
 
 local configuration = {
   "word_count",
+  "cover",
   "numbering",
   "section",
   "utility",
   "bookmark_length",
-
-  "cover",
 }
 
 -- -----------------------------------------------------------------------------
@@ -147,9 +146,14 @@ end
 
 if pandoc.List{ "docx", "json" }:includes(FORMAT) then
 
-configuration = pandoc.List(configuration)
 io.output("thesis.log")
+configuration = pandoc.List(configuration)
 local filters = pandoc.List{}
+
+local raws = {
+  tab = pandoc.RawInline("openxml", '<w:r><w:tab /></w:r>'),
+  page = pandoc.RawInline("openxml", '<w:br w:type="page" />'),
+}
 
 if configuration:includes("word_count") then
   local word_number = 0
@@ -173,82 +177,138 @@ if configuration:includes("word_count") then
 end
 
 if configuration:includes("cover") then
-  local metavalues = {}
+  local degree = ""
   filters:insert{
     Meta = function (elem)
-      pandoc.List{ "title", "author", "specialization", "major", "mentor", "date", "number", "title-en" }:map(function (key)
-        if elem[key] then
-          if elem[key].tag == "MetaInlines" then metavalues[key] = pandoc.List(elem[key]) end
-          elem[key] = nil
-        end
-      end)
-
-      pandoc.List{ "title-cover", "author-cover", "specialization-cover", "major-cover", "mentor-cover", "abstract", "abstract-en" }:map(function (key)
-        if elem[key] then
-          if elem[key].tag == "MetaBlocks" then metavalues[key] = pandoc.List(elem[key]) end
-          if elem[key].tag == "MetaInlines" then metavalues[key] = pandoc.List{ pandoc.Para(pandoc.List(elem[key])) } end
-          elem[key] = nil
-        end
-      end)
-
-      pandoc.List{ { "msg-sign", "                                      （签字）" } }:map(function (x)
-        metavalues[x[1]] = pandoc.List{ pandoc.Str(x[2]) }
-      end)
-
-      return elem
-
+      pandoc.List(elem["degree"]):map(function (x) degree = degree..pandoctostring(x) end)
     end,
+  }
 
-    Pandoc = function (elem)
-      local labelcell = function (str, style, width)
-        return {
-          pandoc.RawBlock("openxml", string.format('<w:tcPr><w:tcMar><w:right w:w="0" w:type="dxa" /></w:tcMar><w:tcW w:w="%q" w:type="pct" /></w:tcPr><w:p><w:pPr><w:pStyle w:val="%s" /><w:jc w:val="distribute" /></w:pPr><w:r><w:rPr><w:spacing w:val="-200" /></w:rPr><w:t>%s</w:t></w:r><w:r><w:t>%s</w:t></w:r></w:p>', width, string.gsub(style, "%s", ""), utf8.sub(str,1,-2), utf8.sub(str,-1)))
-        }
-      end
-      local textcell = function (list, width)
-        local textpr = pandoc.RawBlock("openxml", string.format('<w:tcPr><w:tcMar><w:left w:w="0" w:type="dxa" /></w:tcMar><w:tcW w:w="%q" w:type="pct" /></w:tcPr>', width))
-        local texttab = pandoc.RawInline("openxml", string.format('<w:r><w:tab /></w:r>'))
-        list = list:clone()
-        list:insert(1, texttab)
-        list:insert(texttab)
-        return { textpr, pandoc.Para(list) }
-      end
+  local metavalues = {}
+  cover_filters = {
+    bachelor = {},
 
-      local message = function (tablepairs, tablesep, widthpcts, styles)
-        local rows = pandoc.List{}
-        for _, list in ipairs(tablepairs) do
-          local label, text = table.unpack(list)
-          for _, value in ipairs(metavalues[text.."-cover"] or { pandoc.Para(metavalues[text]) }) do
-            rows:insert({ labelcell(label, styles[1], widthpcts[1]), {
-              pandoc.RawBlock("openxml", string.format('<w:tcPr><w:tcMar><w:left w:w="0" w:type="dxa" /><w:right w:w="0" w:type="dxa" /></w:tcMar><w:tcW w:w="%q" w:type="pct" /></w:tcPr><w:p><w:pPr><w:pStyle w:val="%s" /></w:pPr><w:r><w:t xml:space="preserve">%s</w:t></w:r></w:p>', widthpcts[2], string.gsub(styles[1], "%s", ""),tablesep))
-            }, textcell(value.content, widthpcts[3]) })
-            label = ""
+    master = {
+      Meta = function (elem)
+        pandoc.List{ "title", "author", "specialization", "major", "mentor", "date", "number", "grade", "keywords", "title-en", "author-en", "specialization-en", "mentor-en", "keywords-en" }:map(function (key)
+          if elem[key] then
+            if elem[key].tag == "MetaInlines" then metavalues[key] = pandoc.List(elem[key]) end
+            elem[key] = nil
           end
+        end)
+
+        pandoc.List{ "title-cover", "author-cover", "specialization-cover", "major-cover", "mentor-cover", "abstract", "abstract-en" }:map(function (key)
+          if elem[key] then
+            if elem[key].tag == "MetaBlocks" then metavalues[key] = pandoc.List(elem[key]) end
+            if elem[key].tag == "MetaInlines" then metavalues[key] = pandoc.List{ pandoc.Para(pandoc.List(elem[key])) } end
+            elem[key] = nil
+          end
+        end)
+
+        pandoc.List{ { "msg-sign", string.rep(" ", 40).."（签字）" } }:map(function (x)
+          metavalues[x[1]] = pandoc.List{ pandoc.Str(x[2]) }
+        end)
+
+        pandoc.List{ "cover" }:map(function (key)
+          if elem[key] then
+            local s = ""
+            pandoc.List(elem[key]):map(function (x) s = s..pandoctostring(x) end)
+            metavalues[key] = s
+            elem[key] = nil
+          end
+        end)
+
+        return elem
+
+      end,
+
+      Pandoc = function (elem)
+        local labelcell = function (str, style, width)
+          return {
+            pandoc.RawBlock("openxml", string.format('<w:tcPr><w:tcMar><w:right w:w="0" w:type="dxa" /></w:tcMar><w:tcW w:w="%q" w:type="pct" /></w:tcPr><w:p><w:pPr><w:pStyle w:val="%s" /><w:jc w:val="distribute" /></w:pPr><w:r><w:rPr><w:spacing w:val="-200" /></w:rPr><w:t>%s</w:t></w:r><w:r><w:t>%s</w:t></w:r></w:p>', width, string.gsub(style, "%s", ""), utf8.sub(str,1,-2), utf8.sub(str,-1)))
+          }
         end
-        return pandoc.Div(pandoc.Table({}, { "AlignDefault", "AlignDefault", "AlignDefault" }, pandoc.List(widthpcts):map(function (x) return x / 100 end), { {}, {}, {} }, rows), { ["custom-style"]=styles[2] })
-      end
+        local textcell = function (list, width)
+          local textpr = pandoc.RawBlock("openxml", string.format('<w:tcPr><w:tcMar><w:left w:w="0" w:type="dxa" /></w:tcMar><w:tcW w:w="%q" w:type="pct" /></w:tcPr>', width))
+          return { textpr, pandoc.Para({ raws.tab, pandoc.Span(list), raws.tab }) }
+        end
 
-      local cover = pandoc.List{
-        pandoc.Para({ pandoc.Space() }),
-        pandoc.Para({ pandoc.Space() }),
-        pandoc.Div({
-          pandoc.Para({ pandoc.Str("研 究 生 毕 业 论 文") }),
-          pandoc.Para({ pandoc.Str("（申请硕士学位）") }),
-        }, { ["custom-style"]="Title" }),
-        message({ { "论文题目", "title" }, { "作者姓名", "author" }, { "学科、专业名称", "specialization" }, { "研究方向", "major" }, { "指导老师", "mentor" } }, "", { 23, 5, 60 }, { "Front Cover Label", "Front Cover Text" }),
-        pandoc.Para({ pandoc.Space() }),
-        pandoc.Para({ pandoc.Space() }),
-        pandoc.Div({ pandoc.Para(metavalues["date"]) }, { ["custom-style"]="Date" }),
-        pandoc.Para({ pandoc.RawInline("openxml", '<w:br w:type="page" />') }),
-        pandoc.Para(table.rep(pandoc.LineBreak(), 25)),
-        message({ { "学号", "number" }, { "论文答辩日期", "date" }, { "指导教师", "msg-sign" } }, "：", { 23, 5, 72 }, { "Inside Front Cover Label", "Inside Front Cover Text" }),
-      }
+        local message = function (tablepairs, tablesep, widthpcts, styles)
+          local rows = pandoc.List{}
+          for _, list in ipairs(tablepairs) do
+            local label, text = table.unpack(list)
+            for _, value in ipairs(metavalues[text.."-cover"] or { pandoc.Para(metavalues[text]) }) do
+              rows:insert({ labelcell(label, styles[1], widthpcts[1]), {
+                pandoc.RawBlock("openxml", string.format('<w:tcPr><w:tcMar><w:left w:w="0" w:type="dxa" /><w:right w:w="0" w:type="dxa" /></w:tcMar><w:tcW w:w="%q" w:type="pct" /></w:tcPr><w:p><w:pPr><w:pStyle w:val="%s" /></w:pPr><w:r><w:t xml:space="preserve">%s</w:t></w:r></w:p>', widthpcts[2], string.gsub(styles[1], "%s", ""),tablesep))
+              }, textcell(value.content, widthpcts[3]) })
+              label = ""
+            end
+          end
+          return pandoc.Div(pandoc.Table({}, { "AlignDefault", "AlignDefault", "AlignDefault" }, pandoc.List(widthpcts):map(function (x) return x / 100 end), { {}, {}, {} }, rows), { ["custom-style"]=styles[2] })
+        end
 
-      cover:extend(elem.blocks)
-      elem.blocks = cover
-      return elem
-    end,
+        local cover = pandoc.List{
+          pandoc.Para(pandoc.Str("")),
+          pandoc.Div(pandoc.Para(pandoc.Image({}, metavalues["cover"], "", { width=187 })), { ["custom-style"]="Captioned Figure" }),
+          pandoc.Div({
+            pandoc.Para({ pandoc.Str("研  究  生  毕  业  论  文") }),
+            pandoc.Para({ pandoc.Str("（申请硕士学位）") }),
+          }, { ["custom-style"]="Title" }),
+          pandoc.Para(table.rep(pandoc.LineBreak(), 3)),
+          message({ { "论文题目", "title" }, { "作者姓名", "author" }, { "学科、专业名称", "specialization" }, { "研究方向", "major" }, { "指导老师", "mentor" } }, "", { 23, 5, 60 }, { "Front Cover Label", "Front Cover Text" }),
+          pandoc.Para(table.rep(pandoc.LineBreak(), 4)),
+          pandoc.Div({ pandoc.Para(metavalues["date"]) }, { ["custom-style"]="Date" }),
+          pandoc.Para({ pandoc.RawInline("openxml", '<w:br w:type="page" />') }),
 
+          pandoc.Para(table.rep(pandoc.LineBreak(), 26)),
+          message({ { "学号", "number" }, { "论文答辩日期", "date" }, { "指导教师", "msg-sign" } }, "：", { 23, 5, 72 }, { "Inside Front Cover Label", "Inside Front Cover Text" }),
+          pandoc.Para({ pandoc.RawInline("openxml", '<w:br w:type="page" />') }),
+
+          pandoc.Div({
+            pandoc.Para({ pandoc.Str("南京大学研究生毕业论文中文摘要首页用纸") }),
+          }, { ["custom-style"]="Abstract Title" }),
+          pandoc.Div({
+            pandoc.Para({ pandoc.Str("毕业论文题目："), pandoc.Span({ pandoc.Str("　"), pandoc.Span(metavalues["title"]), pandoc.Str("\t") }, { ["custom-style"]="Abstract Underline Char" }) }),
+            pandoc.Para({
+              pandoc.Span({ pandoc.Str("　"), pandoc.Span(metavalues["specialization"]), pandoc.Str("　") }, { ["custom-style"]="Abstract Underline Char" }), pandoc.Str("专业"),
+              pandoc.Span({ pandoc.Str("　"), pandoc.Span(metavalues["grade"]), pandoc.Str("　") }, { ["custom-style"]="Abstract Underline Char" }), pandoc.Str("级硕士生姓名："),
+              pandoc.Span({ pandoc.Str("　"), pandoc.Span(metavalues["author"]), pandoc.Str("\t") }, { ["custom-style"]="Abstract Underline Char" }),
+            }),
+            pandoc.Para({ pandoc.Str("指导教师（姓名、职称）："), pandoc.Span({ pandoc.Str("　"), pandoc.Span(metavalues["mentor"]), pandoc.Str("\t") }, { ["custom-style"]="Abstract Underline Char" }) }),
+            pandoc.Para({ pandoc.Str("摘要：") }),
+          }, { ["custom-style"]="Abstract Message" }),
+          pandoc.Div(metavalues["abstract"], { ["custom-style"]="Abstract" }),
+          pandoc.Div(pandoc.Para({ pandoc.Str("关键词："), pandoc.Span(metavalues["keywords"]) }), { ["custom-style"]="Keywords" }),
+          pandoc.Para({ pandoc.RawInline("openxml", '<w:br w:type="page" />') }),
+
+          pandoc.Div({
+            pandoc.Para({ pandoc.Str("南京大学研究生毕业论文英文摘要首页用纸") }),
+          }, { ["custom-style"]="Abstract Title" }),
+          pandoc.Div({
+            pandoc.Para({ pandoc.Str("THESIS: "), pandoc.Span(metavalues["title-en"]) }),
+            pandoc.Para({ pandoc.Str("SPECIALIZATION: "), pandoc.Span(metavalues["specialization-en"]) }),
+            pandoc.Para({ pandoc.Str("POSTGRADUATE: "), pandoc.Span(metavalues["author-en"]) }),
+            pandoc.Para({ pandoc.Str("MENTOR: "), pandoc.Span(metavalues["mentor-en"]) }),
+            pandoc.Para(pandoc.Str("ABSTRACT: ")),
+          }, { ["custom-style"]="Abstract Message" }),
+          pandoc.Div(metavalues["abstract-en"], { ["custom-style"]="Abstract" }),
+          pandoc.Div(pandoc.Para({ pandoc.Str("KEYWORDS: "), pandoc.Span(metavalues["keywords-en"]) }), { ["custom-style"]="Keywords" }),
+        }
+
+        cover:extend(elem.blocks)
+        elem.blocks = cover
+        return elem
+      end,
+
+    },
+
+    phd = {},
+  }
+
+  local nilfunc = function (elem) end
+  filters:insert{
+    Meta = function (elem) return ((cover_filters[degree] or {}).Meta or nilfunc)(elem) end,
+    Pandoc = function (elem) return ((cover_filters[degree] or {}).Pandoc or nilfunc)(elem) end,
   }
 end
 
