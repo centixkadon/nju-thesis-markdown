@@ -256,30 +256,29 @@ if configuration:includes("cover") then
           }, { ["custom-style"]="Title" }),
           pandoc.Para(table.rep(pandoc.LineBreak(), 3)),
           message({ { "论文题目", "title" }, { "作者姓名", "author" }, { "学科、专业名称", "specialization" }, { "研究方向", "major" }, { "指导老师", "mentor" } }, "", { 23, 5, 60 }, { "Front Cover Label", "Front Cover Text" }),
-          pandoc.Para(table.rep(pandoc.LineBreak(), 4)),
-          pandoc.Div({ pandoc.Para(metavalues["date"]) }, { ["custom-style"]="Date" }),
-          pandoc.Para({ pandoc.RawInline("openxml", '<w:br w:type="page" />') }),
+          pandoc.Div(pandoc.Para(table.rep(pandoc.LineBreak(), 5 - #metavalues["title-cover"])), { ["custom-style"]="Front Cover Text" }),
+          pandoc.Div({ pandoc.Para({ pandoc.Span(metavalues["date"]), raws.page }) }, { ["custom-style"]="Date" }),
 
           pandoc.Para(table.rep(pandoc.LineBreak(), 26)),
           message({ { "学号", "number" }, { "论文答辩日期", "date" }, { "指导教师", "msg-sign" } }, "：", { 23, 5, 72 }, { "Inside Front Cover Label", "Inside Front Cover Text" }),
-          pandoc.Para({ pandoc.RawInline("openxml", '<w:br w:type="page" />') }),
+          pandoc.Para({ raws.page }),
 
           pandoc.Div({
             pandoc.Para({ pandoc.Str("南京大学研究生毕业论文中文摘要首页用纸") }),
           }, { ["custom-style"]="Abstract Title" }),
           pandoc.Div({
-            pandoc.Para({ pandoc.Str("毕业论文题目："), pandoc.Span({ pandoc.Str("　"), pandoc.Span(metavalues["title"]), pandoc.Str("\t") }, { ["custom-style"]="Abstract Underline Char" }) }),
+            pandoc.Para({ pandoc.Span(pandoc.Str("毕业论文题目："), { ["custom-style"]="Abstract Char" }), pandoc.Str("　"), pandoc.Span(metavalues["title"]), pandoc.Str("\t") }),
             pandoc.Para({
-              pandoc.Span({ pandoc.Str("　"), pandoc.Span(metavalues["specialization"]), pandoc.Str("　") }, { ["custom-style"]="Abstract Underline Char" }), pandoc.Str("专业"),
-              pandoc.Span({ pandoc.Str("　"), pandoc.Span(metavalues["grade"]), pandoc.Str("　") }, { ["custom-style"]="Abstract Underline Char" }), pandoc.Str("级硕士生姓名："),
-              pandoc.Span({ pandoc.Str("　"), pandoc.Span(metavalues["author"]), pandoc.Str("\t") }, { ["custom-style"]="Abstract Underline Char" }),
+              pandoc.Str("　"), pandoc.Span(metavalues["specialization"]), pandoc.Str("　"), pandoc.Span(pandoc.Str("专业"), { ["custom-style"]="Abstract Char" }),
+              pandoc.Str("　"), pandoc.Span(metavalues["grade"]), pandoc.Str("　"), pandoc.Span(pandoc.Str("级硕士生姓名："), { ["custom-style"]="Abstract Char" }),
+              pandoc.Str("　"), pandoc.Span(metavalues["author"]), pandoc.Str("\t"),
             }),
-            pandoc.Para({ pandoc.Str("指导教师（姓名、职称）："), pandoc.Span({ pandoc.Str("　"), pandoc.Span(metavalues["mentor"]), pandoc.Str("\t") }, { ["custom-style"]="Abstract Underline Char" }) }),
-            pandoc.Para({ pandoc.Str("摘要：") }),
-          }, { ["custom-style"]="Abstract Message" }),
+            pandoc.Para({ pandoc.Span(pandoc.Str("指导教师（姓名、职称）："), { ["custom-style"]="Abstract Char" }), pandoc.Str("　"), pandoc.Span(metavalues["mentor"]), pandoc.Str("\t") }),
+            pandoc.Para(pandoc.Span(pandoc.Str("摘要："), { ["custom-style"]="Abstract Char" })),
+          }, { ["custom-style"]="Abstract Underline Message" }),
           pandoc.Div(metavalues["abstract"], { ["custom-style"]="Abstract" }),
           pandoc.Div(pandoc.Para({ pandoc.Str("关键词："), pandoc.Span(metavalues["keywords"]) }), { ["custom-style"]="Keywords" }),
-          pandoc.Para({ pandoc.RawInline("openxml", '<w:br w:type="page" />') }),
+          pandoc.Para({ raws.page }),
 
           pandoc.Div({
             pandoc.Para({ pandoc.Str("南京大学研究生毕业论文英文摘要首页用纸") }),

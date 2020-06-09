@@ -135,8 +135,8 @@
     <w:pPr>
       <w:jc w:val="left" />
       <w:tabs>
-        <w:tab w:val="center" w:pos="2520" />
-        <w:tab w:val="right" w:pos="5040" />
+        <w:tab w:val="center" w:pos="2500" />
+        <w:tab w:val="right" w:pos="5000" />
       </w:tabs>
     </w:pPr>
     <w:rPr>
@@ -164,7 +164,7 @@
       <w:jc w:val="left" />
       <w:tabs>
         <w:tab w:val="left" w:pos="1" />
-        <w:tab w:val="right" w:pos="5040" />
+        <w:tab w:val="right" w:pos="5000" />
       </w:tabs>
     </w:pPr>
     <w:rPr>
@@ -201,9 +201,20 @@
       </w:tabs>
     </w:pPr>
     <w:rPr>
-      <w:rFonts w:ascii="Times New Roman" w:cs="Times New Roman" w:eastAsia="楷体_gb2312" w:hAnsi="Times New Roman" w:hint="eastAsia" />
+      <w:rFonts w:ascii="Times New Roman" w:cs="Times New Roman" w:eastAsia="楷体" w:hAnsi="Times New Roman" />
       <w:sz w:val="28" />
       <w:szCs w:val="28" />
+    </w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:customStyle="1" w:styleId="AbstractUnderlineMessage">
+    <w:name w:val="Abstract Underline Message" />
+    <w:basedOn w:val="AbstractMessage" />
+    <w:next w:val="Abstract" />
+    <w:link w:val="AbstractUnderlineChar" />
+    <w:qFormat />
+    <w:rPr>
+      <w:u w:val="single" />
+      <w:uCs w:val="single" />
     </w:rPr>
   </w:style>
   <w:style w:type="paragraph" w:customStyle="1" w:styleId="Abstract">
@@ -212,7 +223,6 @@
     <w:next w:val="Abstract" />
     <w:qFormat />
     <w:pPr>
-      <w:jc w:val="both" />
       <w:ind w:firstLineChars="200" />
     </w:pPr>
   </w:style>
@@ -221,19 +231,21 @@
     <w:basedOn w:val="AbstractMessage" />
     <w:next w:val="Keywords" />
     <w:qFormat />
-    <w:pPr>
-      <w:jc w:val="both" />
-    </w:pPr>
   </w:style>
 
   <w:style w:type="character" w:customStyle="1" w:styleId="AbstractChar">
     <w:name w:val="Abstract Char" />
     <w:basedOn w:val="BodyTextChar" />
     <w:link w:val="AbstractMessage" />
+    <w:rPr>
+      <w:u w:val="false" />
+      <w:uCs w:val="false" />
+    </w:rPr>
   </w:style>
   <w:style w:type="character" w:customStyle="1" w:styleId="AbstractUnderlineChar">
     <w:name w:val="Abstract Underline Char" />
     <w:basedOn w:val="AbstractChar" />
+    <w:link w:val="AbstractUnderlineMessage" />
     <w:rPr>
       <w:u w:val="single" />
       <w:uCs w:val="single" />
