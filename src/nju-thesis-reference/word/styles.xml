@@ -46,8 +46,9 @@
     <w:basedOn w:val="BodyText" />
     <w:qFormat />
     <w:pPr>
-      <w:jc w:val="both" />
       <w:ind w:firstLineChars="0" />
+      <w:keepNext />
+      <w:keepLines />
     </w:pPr>
   </w:style>
 

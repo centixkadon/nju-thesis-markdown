@@ -2,12 +2,14 @@
 -- configuration ---------------------------------------------------------------
 
 local configuration = {
-  "word_count",
-  "cover",
-  "numbering",
-  "section",
-  "utility",
-  "bookmark_length",
+  "word_count", -- 字数统计
+  "cover", -- 添加封面
+  "numbering", -- 图表式编号及引用
+  "section", -- 添加目录和分节符
+  -- "frame", -- 简单文本框
+  "bookmark", -- 书签
+  "field", -- 域
+  "softbreak", -- 段内换行
 }
 
 -- -----------------------------------------------------------------------------
@@ -116,12 +118,12 @@ function inlinestoattr(inlines)
       if string.sub(s,-1) == "}" then
 
         s = s:sub(2,-2)
-        local identifier = s:match("#([%w_]+)")
+        local identifier = s:match("#([%w-_]+)") or ""
         local classes = {}
         local attributes = {}
-        for class in s:gmatch("%.([%w_]+)") do table.insert(classes, class) end
-        for key, value in s:gmatch("([%w_]+)=([%w_]+)") do attributes[key] = value end
-        for key, value in s:gmatch('([%w_]+)="([%w%s_]+)"') do attributes[key] = value end
+        for class in s:gmatch("%.([%w-_]+)") do table.insert(classes, class) end
+        for key, value in s:gmatch("([%w-_]+)=([%w-_]+)") do attributes[key] = value end
+        for key, value in s:gmatch('([%w-_]+)="([%w%s-_]+)"') do attributes[key] = value end
 
         inlines:erase(i)
         for i = i-1, 1, -1 do
@@ -177,51 +179,47 @@ if configuration:includes("word_count") then
 end
 
 if configuration:includes("cover") then
-  local degree = ""
+  local metavalues = {}
   filters:insert{
     Meta = function (elem)
-      pandoc.List(elem["degree"]):map(function (x) degree = degree..pandoctostring(x) end)
+      pandoc.List{ "cover-image", "cover-degree" }:map(function (key)
+        if elem[key] then
+          local s = ""
+          pandoc.List(elem[key]):map(function (x) s = s..pandoctostring(x) end)
+          metavalues[key] = s
+          elem[key] = nil
+        end
+      end)
+
+      pandoc.List{ "title", "author", "specialization", "major", "mentor", "date", "number", "grade", "keywords", "title-en", "author-en", "specialization-en", "mentor-en", "keywords-en" }:map(function (key)
+        if elem[key] then
+          if elem[key].tag == "MetaInlines" then metavalues[key] = pandoc.List(elem[key]) end
+          elem[key] = nil
+        end
+      end)
+
+      pandoc.List{ "title-cover", "author-cover", "specialization-cover", "major-cover", "mentor-cover", "abstract", "abstract-en" }:map(function (key)
+        if elem[key] then
+          if elem[key].tag == "MetaBlocks" then metavalues[key] = pandoc.List(elem[key]) end
+          if elem[key].tag == "MetaInlines" then metavalues[key] = pandoc.List{ pandoc.Para(pandoc.List(elem[key])) } end
+          elem[key] = nil
+        end
+      end)
+
+      pandoc.List{ { "msg-sign", string.rep(" ", 40).."（签字）" } }:map(function (x)
+        metavalues[x[1]] = pandoc.List{ pandoc.Str(x[2]) }
+      end)
+
+      return elem
+
     end,
+
   }
 
-  local metavalues = {}
-  cover_filters = {
+  local cover_filters = {
     bachelor = {},
 
     master = {
-      Meta = function (elem)
-        pandoc.List{ "title", "author", "specialization", "major", "mentor", "date", "number", "grade", "keywords", "title-en", "author-en", "specialization-en", "mentor-en", "keywords-en" }:map(function (key)
-          if elem[key] then
-            if elem[key].tag == "MetaInlines" then metavalues[key] = pandoc.List(elem[key]) end
-            elem[key] = nil
-          end
-        end)
-
-        pandoc.List{ "title-cover", "author-cover", "specialization-cover", "major-cover", "mentor-cover", "abstract", "abstract-en" }:map(function (key)
-          if elem[key] then
-            if elem[key].tag == "MetaBlocks" then metavalues[key] = pandoc.List(elem[key]) end
-            if elem[key].tag == "MetaInlines" then metavalues[key] = pandoc.List{ pandoc.Para(pandoc.List(elem[key])) } end
-            elem[key] = nil
-          end
-        end)
-
-        pandoc.List{ { "msg-sign", string.rep(" ", 40).."（签字）" } }:map(function (x)
-          metavalues[x[1]] = pandoc.List{ pandoc.Str(x[2]) }
-        end)
-
-        pandoc.List{ "cover" }:map(function (key)
-          if elem[key] then
-            local s = ""
-            pandoc.List(elem[key]):map(function (x) s = s..pandoctostring(x) end)
-            metavalues[key] = s
-            elem[key] = nil
-          end
-        end)
-
-        return elem
-
-      end,
-
       Pandoc = function (elem)
         local labelcell = function (str, style, width)
           return {
@@ -249,7 +247,7 @@ if configuration:includes("cover") then
 
         local cover = pandoc.List{
           pandoc.Para(pandoc.Str("")),
-          pandoc.Div(pandoc.Para(pandoc.Image({}, metavalues["cover"], "", { width=187 })), { ["custom-style"]="Captioned Figure" }),
+          pandoc.Div(pandoc.Para(pandoc.Image({}, metavalues["cover-image"], "", { width=187 })), { ["custom-style"]="Captioned Figure" }),
           pandoc.Div({
             pandoc.Para({ pandoc.Str("研  究  生  毕  业  论  文") }),
             pandoc.Para({ pandoc.Str("（申请硕士学位）") }),
@@ -306,13 +304,12 @@ if configuration:includes("cover") then
 
   local nilfunc = function (elem) end
   filters:insert{
-    Meta = function (elem) return ((cover_filters[degree] or {}).Meta or nilfunc)(elem) end,
-    Pandoc = function (elem) return ((cover_filters[degree] or {}).Pandoc or nilfunc)(elem) end,
+    Pandoc = function (elem) return ((cover_filters[metavalues["cover-degree"]] or {}).Pandoc or nilfunc)(elem) end,
   }
 end
 
 if configuration:includes("numbering") then
-  local number = { 0, 0, 0, 0, 0, 0, fig=0, lst=0, eq=0 }
+  local number = { 0, 0, 0, 0, 0, 0, fig=0, tbl=0, eq=0 }
   local numbers = {}
 
   filters:insert{
@@ -332,14 +329,11 @@ if configuration:includes("numbering") then
       if elem.content[1].tag == "Math" and elem.content[1].mathtype == "DisplayMath" then
         number.eq = number.eq + 1
 
-        local aligns = { "AlignLeft", "AlignRight" }
         local widthpcts = pandoc.List{ 95, 5 }
-        local width = widthpcts:reduce(function (sum, x) return sum + x end)
-        local widths = widthpcts:map(function (value) return value / width end)
+        local widths = widthpcts:map(function (x) return x / 100 end)
+        local tcpr = widthpcts:map(function (x) return pandoc.RawBlock("openxml", string.format('<w:tcPr><w:tcW w:w="%q" w:type="pct"/></w:tcPr>', x)) end)
 
-        local formatstring = '<w:tcPr><w:tcW w:w="%q" w:type="pct"/></w:tcPr>'
-        local tcpr = widthpcts:map(function (x) return pandoc.RawBlock("openxml", string.format(formatstring, x)) end)
-        local math = pandoc.Para({ elem.content[1] })
+        local attr = inlinestoattr(elem.content)
         local eqno = {
           pandoc.Str("("),
           pandoc.RawInline("field", string.format('{={Section \\* MergeFormat|}-1|%q}', number[1])),
@@ -347,71 +341,64 @@ if configuration:includes("numbering") then
           pandoc.RawInline("field", string.format("{Seq equations|%q}", number.eq)),
           pandoc.Str(")"),
         }
-        if elem.content[#elem.content].tag == "Str" then
-          local identifier = elem.content[#elem.content].text
-          if string.sub(identifier, 1, 5) == "{#eq:" and string.sub(identifier, -1) == "}" then
-            identifier = string.sub(identifier, 3, -2)
-            if numbers[identifier] then
-              io.write(string.format("bookmark exist: %q\n", identifier))
-            else
-              numbers[identifier] = string.format("(%s.%s)", number[1], number.eq)
-            end
-            eqno = { pandoc.Span(eqno, { id=identifier }) }
+        if attr and attr.identifier and attr.identifier:sub(1,3) == "eq-" then
+          if numbers[attr.identifier] then
+            io.write(string.format("bookmark exist: %q\n", attr.identifier))
+          else
+            numbers[attr.identifier] = string.format("(%s.%s)", number[1], number.eq)
           end
+          eqno = pandoc.Span(eqno, { id=attr.identifier })
         end
-
-        return { pandoc.Table({}, aligns, widths, { {}, {} }, { { { tcpr[1], pandoc.Div({ math }, { ["custom-style"]="Equation" }) }, { tcpr[2], pandoc.Div({ pandoc.Para(eqno) }, { ["custom-style"]="Equation Caption" }) } } }) }
+        return { pandoc.Table({}, { "AlignLeft", "AlignRight" }, widths, { {}, {} }, {
+          {
+            { tcpr[1], pandoc.Div(elem, { ["custom-style"]="Equation" }) },
+            { tcpr[2], pandoc.Div(pandoc.Para(eqno), { ["custom-style"]="Equation Caption" }) },
+          },
+        }) }
 
       elseif elem.content[1].tag == "Image" and not elem.content[2] then
         local image = elem.content[1]
+        if #image.caption > 0 then
+          number.fig = number.fig + 1
 
-        if image.classes:includes("frame") then
-          local class = table.concat(image.classes:filter(function (class) return string.find(class, "frame") == 1 end), " ")
-          image.classes = image.classes:filter(function (class) return string.find(class, "frame") ~= 1 end)
-
-          if #image.caption > 0 then
-            number.fig = number.fig + 1
-            local identifier = image.identifier
+          if image.identifier and image.identifier:sub(1,4) == "fig-" then
+            numbers[image.identifier] = string.format("图%s.%s", number[1], number.fig)
+            image.caption = { pandoc.Span(image.caption, { id=image.identifier }) }
             image.identifier = ""
-            if string.sub(identifier, 1, 4) == "fig:" then
-              numbers[identifier] = string.format("图%s.%s", number[1], number.fig)
-            end
-
-            local caption = pandoc.Div({ pandoc.Para({ pandoc.Span(image.caption, { id=identifier }) }) }, { ["custom-style"]="Image Caption" })
-            image.caption = {}
-            return { pandoc.Div({ pandoc.Div({ elem }, { ["custom-style"]="Captioned Figure" }), caption }, { class=class }) }
-          else
-            return { pandoc.Div({ elem }, { class=class }) }
-          end
-        else
-          if #image.caption > 0 then
-            number.fig = number.fig + 1
-            local identifier = image.identifier
-            image.identifier = ""
-            if string.sub(identifier, 1, 4) == "fig:" then
-              numbers[identifier] = string.format("图%s.%s", number[1], number.fig)
-            end
-
-            image.caption = { pandoc.Span(image.caption, { id=identifier }) }
-            return elem
           end
         end
 
+        return elem
       end
     end,
+
+    Table = function (elem)
+      if #elem.caption > 0 then
+        number.tbl = number.tbl + 1
+
+        attr = inlinestoattr(elem.caption)
+        if attr.identifier and attr.identifier:sub(1,4) == "tbl-" then
+          numbers[attr.identifier] = string.format("表%s.%s", number[1], number.tbl)
+          elem.caption = { pandoc.Span(elem.caption, { id=attr.identifier }) }
+        end
+      end
+
+      return elem
+    end,
+
   }
 
   filters:insert{
     Cite = function (elem)
       local identifier = elem.citations[1].id
-      if string.sub(identifier, 1, 3) == "eq:" then
+      if string.sub(identifier, 1, 3) == "eq-" then
         return {
           pandoc.Str("式"),
           pandoc.RawInline("field", string.format("{Ref %s|%s}", identifier, numbers[identifier] or "Error! Equation not defined")),
         }
-      elseif string.sub(identifier, 1, 4) == "fig:" then
+      elseif string.sub(identifier, 1, 4) == "fig-" then
         return { pandoc.RawInline("field", string.format("{Ref %s \\r|%s}", identifier, numbers[identifier] or "Error! Figure not defined")) }
-      elseif string.sub(identifier, 1, 4) == "tbl:" then
+      elseif string.sub(identifier, 1, 4) == "tbl-" then
         return { pandoc.RawInline("field", string.format("{Ref %s \\r|%s}", identifier, numbers[identifier] or "Error! Table not defined")) }
       end
     end,
@@ -488,7 +475,7 @@ if configuration:includes("section") then
 
 end
 
-if configuration:includes("utility") then
+if configuration:includes("frame") then
   filters:insert{
     Div = function (elem)
       if elem.classes:includes("frame") then
@@ -534,14 +521,29 @@ if configuration:includes("utility") then
 
     end,
 
+  }
+
+end
+
+if configuration:includes("bookmark") then
+  filters:insert{
     RawInline = function (elem)
       if elem.format:find("bookmark") then
         local text = ''
         if ("bookmarkStart"):find(elem.format) then text = text..string.format('<w:bookmarkStart w:id=%q w:name=%q/>', elem.text, elem.text) end
         if ("bookmarkEnd"):find(elem.format) then text = text..string.format('<w:bookmarkEnd w:id=%q/>', elem.text) end
         return pandoc.RawInline("openxml", text)
+      end
+    end,
 
-      elseif elem.format:find("field") then
+  }
+
+end
+
+if configuration:includes("field") then
+  filters:insert{
+    RawInline = function (elem)
+      if elem.format:find("field") then
         local text = '<w:r>'
         local instr = ""
         for c in string.gmatch(elem.text, utf8.charpattern) do
@@ -573,6 +575,12 @@ if configuration:includes("utility") then
       end
     end,
 
+  }
+
+end
+
+if configuration:includes("softbreak") then
+  filters:insert{
     Inlines = function (inlines)
       for i = #inlines-1, 2, -1 do
         if inlines[i].tag == "SoftBreak" then
@@ -604,7 +612,7 @@ if configuration:includes("utility") then
 
 end
 
-if configuration:includes("bookmark_length") then
+if configuration:includes("bookmark") then
   filters:insert{
     Div = function (elem)
       if utf8.len(elem.identifier) > 40 then

@@ -1,13 +1,14 @@
 
-# nju-thesis-markdown
+# 南京大学学位论文排版工具
 
 Life is short, you need Markdown.
 
-本项目提供了一个基于 [Pandoc](https://www.pandoc.org/) 导出 docx 南京大学学位论文的 Lua Filter 。该模板虽暂不严格遵循某些格式要求，但想必可以满足学士和硕士学位论文的需求，可帮助没有 LaTeX 基础且没有强迫症的南京大学同学们极其方便地排版出够用的学位论文。
+本项目提供了一个基于 [Pandoc](https://www.pandoc.org/) 导出 docx 南京大学学位论文的 Lua Filter 。该模板想必可以满足硕士学位论文的需求，帮助没有 LaTeX 基础且没有强迫症的南京大学同学们极其方便地排版出够用的学位论文。
 
 ## 功能特色
 
 - 可排版硕士、学士学位论文（学士论文封面、摘要暂未直接生成）；
+- 相比 LaTeX 简单多了，兼顾文本文件的版本控制和 Microsoft Word 的功能全面；
 - 导出的 docx 文件用书签和域来引用，插入图、表、公式导致的引用文字变化可以直接更新；
 - 导出的 docx 文件可以供不使用 LaTeX 的导师修改；
 - 功能不足的地方可以导出 docx 文件后用 Microsoft Word 补足。
@@ -15,61 +16,23 @@ Life is short, you need Markdown.
 ## 参考的格式要求
 
 - [博士（硕士）学位论文编写格式规定（试行）](https://grawww.nju.edu.cn/ec/4e/c1040a60494/page.htm)
-- [2020届本科毕业论文工作手册](https://jw.nju.edu.cn/22/24/c24683a467492/page.htm)
-
-## 项目进展
-
-- [x] 前置部分
-  - [x] 封面
-    - [x] 图片
-    - [x] 标题（研究生毕业论文）
-    - [x] 论文信息
-  - [x] 中英文摘要、关键词
-    - [x] 摘要标题
-    - [x] 摘要信息
-    - [x] 摘要
-    - [x] 关键词
-  - [x] 目录、目次页
-  - [x] 插图和附表清单（使用表格实现）
-  - [x] 注释说明汇集表（使用表格实现）
-  - [x] 规范要求
-    - [x] 前置部分页码
-- [x] 主体部分
-  - [x] 序号
-  - [x] 图、表、公式
-    - [x] 编号
-    - [x] 图、公式引用
-    - [ ] 表引用
-  - [x] 参考文献
-    - [x] 规范格式
-    - [x] 导出 docx 后用其它文献管理软件（如 Zotero 、 EndNote ）
-  - [x] 科研成果
-  - [x] 致谢
-  - [x] 规范要求
-    - [x] 字体、字号
-    - [x] 页眉
-    - [x] 正文页码
-- [x] 附录部分（非必要）
-  - [x] 附录页码（接正文页码）
-- [ ] 结尾部分（非必要）
-- [x] 杂项
-  - [x] 域支持
-  - [x] 中文之间的换行不添加空格（中英文之间的换行也不添加，英文之间的换行添加）
-  - [x] 字数统计
+  - GB7713 科学技术报告、学位论文和学术论文的编写格式
+  - GB7714 文后参考文献著录规则
+- [2020届本科毕业论文工作手册](https://jw.nju.edu.cn/22/24/c24683a467492/page.htm)（除了封面和摘要）
 
 ## 简单开始
 
 在 [Releases · jgm/pandoc](https://github.com/jgm/pandoc/releases) 下载最新的 pandoc 二进制文件。后缀为 -x86_64.zip 的是供 Windows 的免安装版本，其余同理。下载后解压。
 
-在本项目用 Clone or download 下载最新的工程文件，解压到目录 nju-thesis-markdown
+在本项目用 Clone or download 下载最新的工程文件，解压到目录 nju-thesis-markdown 。
 
-Windows 下打开 powershell 或 cmd 并进入目录 nju-thesis-markdown/build ，运行
+Windows 下打开 powershell 或 cmd 并进入目录 nju-thesis-markdown/build ，运行：
 
 ```
 /path/to/pandoc.exe --lua-filter ../src/thesis.lua --filter pandoc-citeproc sample.md --reference-doc nju-thesis-reference.docx --output sample.docx
 ```
 
-如需要导出 docx 文件再自行添加参考文献，则运行
+如需要导出 docx 文件再自行添加参考文献，则运行：
 
 ```
 /path/to/pandoc.exe --lua-filter ../src/nju-thesis.lua sample.md --reference-doc nju-thesis-reference.docx --output build/sample.docx
@@ -89,9 +52,10 @@ Pandoc 直接支持 TeX 格式的公式，示例见 [Pandoc - Math Demos](https:
 /path/to/pandoc.exe math.docx --to markdown
 ```
 
-### 其它
+### 其他功能
 
-详见 src/sample.md 。包括图、表、公式、对图表式编号的引用、书签和域、引用文章和参考文献。
+从 src/sample.md 开始使用吧。包括图、表、公式、对图表式编号的引用、书签和域、引用文章和参考文献。
+
 
 ## 进阶使用
 
@@ -132,3 +96,52 @@ OOXML (Office Open XML) 是 Microsoft 开发的、基于 XML (Extensible Markup 
 Markdown 作为一门从命名就可以看出与 Markup Language 针锋相对的标记语言，因为简单方便，所以表达的信息是有极限的。好在 Pandoc's Markdown 提供了 raw_attribute 的扩展，可以在 Markdown 中写目标格式的标记语言。比如章节前自动换页、域等功能就是通过 Lua Filter 和 OOXML 实现的。
 
 有关 OOXML 语法，官方的网站没有找到。推荐 [Office Open XML - What is OOXML?](http://officeopenxml.com/) ，虽然看起来不官方，但是非常全面详细，目前想找的都能找到。
+
+
+## 其他
+
+### 项目进展
+
+- [x] 前置部分
+  - [x] 封面（硕士）
+    - [x] 图片
+    - [x] 标题（研究生毕业论文）
+    - [x] 论文信息
+  - [x] 中英文摘要页（硕士）
+    - [x] 摘要标题
+    - [x] 摘要信息
+    - [x] 摘要
+    - [x] 关键词
+  - [x] 目录、目次页
+  - [x] 插图和附表清单（使用表格实现）
+  - [x] 注释说明汇集表（使用表格实现）
+  - [x] 规范要求
+    - [x] 前置部分页码
+- [x] 主体部分
+  - [x] 序号
+  - [x] 图、表、公式
+    - [x] 编号
+    - [x] 图、表、公式引用
+  - [x] 参考文献
+    - [x] 规范格式
+    - [x] 导出 docx 后用其它文献管理软件（如 Zotero 、 EndNote ）
+  - [x] 科研成果
+  - [x] 致谢
+  - [x] 规范要求
+    - [x] 字体、字号
+    - [x] 页眉
+    - [x] 正文页码
+- [x] 附录部分（非必要）
+  - [x] 附录页码（接正文页码）
+- [ ] 结尾部分（非必要）
+- [x] 杂项
+  - [x] 域支持
+  - [x] 中文之间的换行不添加空格（中英文之间的换行也不添加，英文之间的换行添加）
+  - [x] 字数统计
+
+### 文件来源
+
+| 文件                                      | 来源                                                       |
+|:------------------------------------------|:-----------------------------------------------------------|
+| build/csl/chinese-gb7714-2005-numeric.csl | [Zotero Style Repository](https://www.zotero.org/styles)   |
+| build/nju.png                             | [视觉形象规范化标准](https://www.nju.edu.cn/3647/list.htm) |
