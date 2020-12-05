@@ -242,7 +242,7 @@ if configuration:includes("cover") then
               label = ""
             end
           end
-          return pandoc.Div(pandoc.Table({}, { "AlignDefault", "AlignDefault", "AlignDefault" }, pandoc.List(widthpcts):map(function (x) return x / 100 end), { {}, {}, {} }, rows), { ["custom-style"]=styles[2] })
+          return pandoc.Div(pandoc.utils.from_simple_table(pandoc.SimpleTable({}, { "AlignDefault", "AlignDefault", "AlignDefault" }, pandoc.List(widthpcts):map(function (x) return x / 100 end), { {}, {}, {} }, rows)), { ["custom-style"]=styles[2] })
         end
 
         local cover = pandoc.List{
@@ -349,12 +349,12 @@ if configuration:includes("numbering") then
           end
           eqno = pandoc.Span(eqno, { id=attr.identifier })
         end
-        return { pandoc.Table({}, { "AlignLeft", "AlignRight" }, widths, { {}, {} }, {
+        return { pandoc.utils.from_simple_table(pandoc.SimpleTable({}, { "AlignLeft", "AlignRight" }, widths, { {}, {} }, {
           {
             { tcpr[1], pandoc.Div(elem, { ["custom-style"]="Equation" }) },
             { tcpr[2], pandoc.Div(pandoc.Para(eqno), { ["custom-style"]="Equation Caption" }) },
           },
-        }) }
+        })) }
 
       elseif elem.content[1].tag == "Image" and not elem.content[2] then
         local image = elem.content[1]
@@ -373,13 +373,14 @@ if configuration:includes("numbering") then
     end,
 
     Table = function (elem)
-      if #elem.caption > 0 then
+      if elem.caption.long and #elem.caption.long > 0 then
         number.tbl = number.tbl + 1
 
-        attr = inlinestoattr(elem.caption)
-        if attr.identifier and attr.identifier:sub(1,4) == "tbl-" then
+        local plain = elem.caption.long[1]
+        local attr = inlinestoattr(plain.content)
+        if attr and attr.identifier and attr.identifier:sub(1,4) == "tbl-" then
           numbers[attr.identifier] = string.format("表%s.%s", number[1], number.tbl)
-          elem.caption = { pandoc.Span(elem.caption, { id=attr.identifier }) }
+          plain.content = { pandoc.Span(plain.content, { id=attr.identifier }) }
         end
       end
 

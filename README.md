@@ -29,7 +29,7 @@ Life is short, you need Markdown.
 Windows 下打开 powershell 或 cmd 并进入目录 nju-thesis-markdown/thesis ，运行：
 
 ```
-/path/to/pandoc.exe --lua-filter ../src/thesis.lua --filter pandoc-citeproc sample.md --reference-doc nju-thesis-reference.docx --output sample.docx
+/path/to/pandoc.exe --lua-filter ../src/thesis.lua --citeproc sample.md --reference-doc nju-thesis-reference.docx --output sample.docx
 ```
 
 如需要导出 docx 文件再自行添加参考文献，则运行：
