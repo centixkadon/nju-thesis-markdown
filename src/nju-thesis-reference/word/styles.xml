@@ -655,6 +655,10 @@
     <w:basedOn w:val="DefaultParagraphFont" />
     <w:link w:val="BodyText" />
   </w:style>
+  <w:style w:type="character" w:customStyle="1" w:styleId="SectionNumber">
+    <w:name w:val="Section Number" />
+    <w:basedOn w:val="BodyTextChar" />
+  </w:style>
   <w:style w:type="character" w:customStyle="1" w:styleId="VerbatimChar">
     <w:name w:val="Verbatim Char" />
     <w:basedOn w:val="BodyTextChar" />
