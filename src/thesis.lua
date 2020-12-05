@@ -12,6 +12,9 @@ local configuration = {
   "softbreak", -- 段内换行
 }
 
+-- 公式和编号的列宽比例。如果公式编号格式不对，可以按需调整
+local equation_widthpcts = pandoc.List{ 95, 5 }
+
 -- -----------------------------------------------------------------------------
 
 
@@ -329,7 +332,7 @@ if configuration:includes("numbering") then
       if elem.content[1].tag == "Math" and elem.content[1].mathtype == "DisplayMath" then
         number.eq = number.eq + 1
 
-        local widthpcts = pandoc.List{ 95, 5 }
+        local widthpcts = equation_widthpcts
         local widths = widthpcts:map(function (x) return x / 100 end)
         local tcpr = widthpcts:map(function (x) return pandoc.RawBlock("openxml", string.format('<w:tcPr><w:tcW w:w="%q" w:type="pct"/></w:tcPr>', x)) end)
 
