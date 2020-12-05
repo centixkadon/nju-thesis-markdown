@@ -1,6 +1,7 @@
 
 test
 
-build/sample.docx
-build/sample.json
-build/thesis.log
+thesis/sample.docx
+thesis/sample.json
+thesis/sample.pdf
+thesis/thesis.log

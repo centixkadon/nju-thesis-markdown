@@ -26,7 +26,7 @@ Life is short, you need Markdown.
 
 在本项目用 Clone or download 下载最新的工程文件，解压到目录 nju-thesis-markdown 。
 
-Windows 下打开 powershell 或 cmd 并进入目录 nju-thesis-markdown/build ，运行：
+Windows 下打开 powershell 或 cmd 并进入目录 nju-thesis-markdown/thesis ，运行：
 
 ```
 /path/to/pandoc.exe --lua-filter ../src/thesis.lua --filter pandoc-citeproc sample.md --reference-doc nju-thesis-reference.docx --output sample.docx
@@ -35,14 +35,14 @@ Windows 下打开 powershell 或 cmd 并进入目录 nju-thesis-markdown/build �
 如需要导出 docx 文件再自行添加参考文献，则运行：
 
 ```
-/path/to/pandoc.exe --lua-filter ../src/nju-thesis.lua sample.md --reference-doc nju-thesis-reference.docx --output build/sample.docx
+/path/to/pandoc.exe --lua-filter ../src/thesis.lua sample.md --reference-doc nju-thesis-reference.docx --output sample.docx
 ```
 
 ## 一些技巧
 
 ### 排版更改
 
-导出 docx 文件的字体样式、布局排版、小节编号等等都可以在 build/nju-thesis-reference.docx 中更改。打开该文件，修改并更新对应的样式，然后保存即可。需要注意的是，由于项目不够完善，直接修改页眉页脚可能会导致最终导出 docx 文件出错。如有需求，可以在 src/nju-thesis-reference 中更改（此处需要学习 OOXML ），然后将该文件夹内的内容压缩成 zip 压缩文件 build/nju-thesis-reference.docx （注意不能包括 src/nju-thesis-reference 文件夹本身）。南大同学也可以直接提 [issue](https://github.com/centixkadon/nju-thesis-markdown/issues) 。
+导出 docx 文件的字体样式、布局排版、小节编号等等都可以在 thesis/nju-thesis-reference.docx 中更改。打开该文件，修改并更新对应的样式，然后保存即可。需要注意的是，由于项目不够完善，直接修改页眉页脚可能会导致最终导出 docx 文件出错。如有需求，可以在 src/nju-thesis-reference 中更改（此处需要学习 OOXML ），然后将该文件夹内的内容压缩成 zip 压缩文件 thesis/nju-thesis-reference.docx （注意不能包括 src/nju-thesis-reference 文件夹本身）。南大同学也可以直接提 [issue](https://github.com/centixkadon/nju-thesis-markdown/issues) 。
 
 ### 公式输入
 
@@ -143,5 +143,5 @@ Markdown 作为一门从命名就可以看出与 Markup Language 针锋相对的
 
 | 文件                                      | 来源                                                       |
 |:------------------------------------------|:-----------------------------------------------------------|
-| build/csl/chinese-gb7714-2005-numeric.csl | [Zotero Style Repository](https://www.zotero.org/styles)   |
-| build/nju.png                             | [视觉形象规范化标准](https://www.nju.edu.cn/3647/list.htm) |
+| thesis/csl/chinese-gb7714-2005-numeric.csl | [Zotero Style Repository](https://www.zotero.org/styles)   |
+| thesis/nju.png                             | [视觉形象规范化标准](https://www.nju.edu.cn/3647/list.htm) |
