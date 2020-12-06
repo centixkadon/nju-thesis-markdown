@@ -94,6 +94,53 @@ function pandoc.List:erase(i, j)
   end
 end
 
+function pandoc.CaptionLong(blocks)
+  return { long=blocks }
+end
+
+function pandoc.CaptionShort(inlines)
+  return { short=inlines }
+end
+
+function pandoc.ColSpec(width, alignment)
+  return { alignment or pandoc.AlignDefault, width }
+end
+
+function pandoc.TableAttr(identifier, classes, attributes)
+  return { identifier or "", classes or {}, attributes or {} }
+end
+
+function pandoc.TableCell(contents, row_span, col_span, alignment, attr)
+  return {
+    attr = attr or pandoc.TableAttr(),
+    alignment = alignment or pandoc.AlignDefault,
+    contents = contents,
+    col_span = col_span or 1,
+    row_span = row_span or 1,
+  }
+end
+
+function pandoc.TableRow(cells, attr)
+  return { attr or pandoc.TableAttr(), cells }
+end
+
+function pandoc.TableHead(rows, attr)
+  return { attr or pandoc.TableAttr(), rows }
+end
+
+function pandoc.TableBody(body, row_head_columns, head, attr)
+  return {
+    attr = attr or pandoc.TableAttr(),
+    body = body,
+    head = head or {},
+    row_head_columns = row_head_columns or 0,
+  }
+end
+
+function pandoc.TableFoot(rows, attr)
+  return { attr or pandoc.TableAttr(), rows or {} }
+end
+
 
 function pandoctostring(elem)
   if elem.tag == "Space" then
@@ -146,6 +193,36 @@ function inlinestoattr(inlines)
 
 end
 
+function printobject(obj, indent, prefix)
+  if indent == nil then
+    indent = 0
+  end
+  local s = string.rep(" ", indent)
+  if prefix ~= nil then
+    s = s..prefix.." = "
+  end
+  if type(obj) == "table" then
+    s = s.."{"
+    print(s)
+    if obj.tag then
+      printobject(obj.tag, indent + 2, "tag")
+    end
+    for key, value in pairs(obj) do
+      if type(key) == "string" then
+        if key ~= "tag" then
+          printobject(value, indent + 2, key)
+        end
+      else
+        printobject(value, indent + 2)
+      end
+    end
+    print(string.rep(" ", indent).."},")
+  elseif pandoc.List{ "nil", "boolean", "number", "string" }:includes(type(obj)) then
+    print(string.format("%s%q,", s, obj))
+  else
+    print(string.format("%s%q,", s, type(obj)))
+  end
+end
 
 
 
@@ -225,13 +302,13 @@ if configuration:includes("cover") then
     master = {
       Pandoc = function (elem)
         local labelcell = function (str, style, width)
-          return {
+          return pandoc.TableCell({
             pandoc.RawBlock("openxml", string.format('<w:tcPr><w:tcMar><w:right w:w="0" w:type="dxa" /></w:tcMar><w:tcW w:w="%q" w:type="pct" /></w:tcPr><w:p><w:pPr><w:pStyle w:val="%s" /><w:jc w:val="distribute" /></w:pPr><w:r><w:rPr><w:spacing w:val="-200" /></w:rPr><w:t>%s</w:t></w:r><w:r><w:t>%s</w:t></w:r></w:p>', width, string.gsub(style, "%s", ""), utf8.sub(str,1,-2), utf8.sub(str,-1)))
-          }
+          })
         end
         local textcell = function (list, width)
           local textpr = pandoc.RawBlock("openxml", string.format('<w:tcPr><w:tcMar><w:left w:w="0" w:type="dxa" /></w:tcMar><w:tcW w:w="%q" w:type="pct" /></w:tcPr>', width))
-          return { textpr, pandoc.Para({ raws.tab, pandoc.Span(list), raws.tab }) }
+          return pandoc.TableCell({ textpr, pandoc.Para({ raws.tab, pandoc.Span(list), raws.tab }) })
         end
 
         local message = function (tablepairs, tablesep, widthpcts, styles)
@@ -239,13 +316,19 @@ if configuration:includes("cover") then
           for _, list in ipairs(tablepairs) do
             local label, text = table.unpack(list)
             for _, value in ipairs(metavalues[text.."-cover"] or { pandoc.Para(metavalues[text]) }) do
-              rows:insert({ labelcell(label, styles[1], widthpcts[1]), {
+              rows:insert(pandoc.TableRow({ labelcell(label, styles[1], widthpcts[1]), pandoc.TableCell({
                 pandoc.RawBlock("openxml", string.format('<w:tcPr><w:tcMar><w:left w:w="0" w:type="dxa" /><w:right w:w="0" w:type="dxa" /></w:tcMar><w:tcW w:w="%q" w:type="pct" /></w:tcPr><w:p><w:pPr><w:pStyle w:val="%s" /></w:pPr><w:r><w:t xml:space="preserve">%s</w:t></w:r></w:p>', widthpcts[2], string.gsub(styles[1], "%s", ""),tablesep))
-              }, textcell(value.content, widthpcts[3]) })
+              }), textcell(value.content, widthpcts[3]) }))
               label = ""
             end
           end
-          return pandoc.Div(pandoc.utils.from_simple_table(pandoc.SimpleTable({}, { "AlignDefault", "AlignDefault", "AlignDefault" }, pandoc.List(widthpcts):map(function (x) return x / 100 end), { {}, {}, {} }, rows)), { ["custom-style"]=styles[2] })
+          return pandoc.Div(pandoc.Table(
+            pandoc.CaptionLong({}),
+            pandoc.List(widthpcts):map(function (x) return pandoc.ColSpec(x / 100) end),
+            pandoc.TableHead({}),
+            { pandoc.TableBody(rows) },
+            pandoc.TableFoot({})
+          ), { ["custom-style"]=styles[2] })
         end
 
         local cover = pandoc.List{
@@ -352,12 +435,16 @@ if configuration:includes("numbering") then
           end
           eqno = pandoc.Span(eqno, { id=attr.identifier })
         end
-        return { pandoc.utils.from_simple_table(pandoc.SimpleTable({}, { "AlignLeft", "AlignRight" }, widths, { {}, {} }, {
-          {
-            { tcpr[1], pandoc.Div(elem, { ["custom-style"]="Equation" }) },
-            { tcpr[2], pandoc.Div(pandoc.Para(eqno), { ["custom-style"]="Equation Caption" }) },
-          },
-        })) }
+        return { pandoc.Table(
+          pandoc.CaptionLong({}),
+          { pandoc.ColSpec(widths[1], pandoc.AlignLeft), pandoc.ColSpec(widths[2], pandoc.AlignRight) },
+          pandoc.TableHead({}),
+          { pandoc.TableBody({ pandoc.TableRow({
+            pandoc.TableCell({ tcpr[1], pandoc.Div(elem, { ["custom-style"]="Equation" }) }),
+            pandoc.TableCell({ tcpr[2], pandoc.Div(pandoc.Para(eqno), { ["custom-style"]="Equation Caption" }) }),
+          }) }) },
+          pandoc.TableFoot({})
+        ) }
 
       elseif elem.content[1].tag == "Image" and not elem.content[2] then
         local image = elem.content[1]
