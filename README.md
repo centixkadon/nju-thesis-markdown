@@ -3,7 +3,7 @@
 
 Life is short, you need Markdown.
 
-本项目提供了一个基于 [Pandoc](https://www.pandoc.org/) 导出 docx 南京大学学位论文的 Lua Filter 。该模板想必可以满足硕士学位论文的需求，帮助没有 LaTeX 基础且没有强迫症的南京大学同学们极其方便地排版出够用的学位论文。
+本项目提供了一个基于 [Pandoc](https://pandoc.org/) 导出 docx 南京大学学位论文的 Lua Filter 。该模板想必可以满足硕士学位论文的需求，帮助没有 LaTeX 基础且没有强迫症的南京大学同学们极其方便地排版出够用的学位论文。
 
 
 ## 功能特色
@@ -20,7 +20,12 @@ Life is short, you need Markdown.
 - [博士（硕士）学位论文编写格式规定（试行）](https://grawww.nju.edu.cn/_upload/article/files/7e/52/1266fc144fd6b14fc32266b912ec/a28cccb8-a68c-4153-b585-25910331056e.doc)
   - GB7713 科学技术报告、学位论文和学术论文的编写格式
   - GB7714 文后参考文献著录规则
-- [2020届本科毕业论文工作手册](https://jw.nju.edu.cn/22/24/c24683a467492/page.htm)（除了封面和摘要）
+- [2020届本科毕业论文工作手册](https://jw.nju.edu.cn/_upload/article/files/a2/17/e4e5fb414ddf8d64accea8e63e4a/df778a5f-c871-488f-8ba8-de6a0a02e700.rar)
+- [2021届本科毕业论文工作手册](https://jw.nju.edu.cn/_upload/article/files/8c/b2/1e82afc4461da5b6c5edbb48d8a5/741692c3-ccf6-43ae-8413-9df21732f8dd.rar)
+
+因学校会清理过期网页，但未清理过期文件，所以引用了下载文件的链接。
+
+比较后发现2020届和2021届本科毕业论文工作手册的格式要求没有区别。
 
 
 ## 简单开始
@@ -49,7 +54,7 @@ Windows 下打开 powershell 或 cmd 并进入目录 nju-thesis-markdown/thesis 
 
 本项目输出的 docx 文件仅使用 Microsoft Word 2019 测试了打开、更新域、生成 pdf 文件等功能，未使用 WPS Office 或 LibreOffice 测试。对版本较旧的 Microsoft Word 大概率也是可以兼容的（ 2013 及以上）。
 
-本项目在 Windows 平台测试……
+本项目仅在 Windows 平台测试……但是理论上跨平台兼容性由 pandoc 提供，应该没有问题。
 
 
 ## 一些技巧
@@ -85,7 +90,7 @@ Pandoc 直接支持 TeX 格式的公式，示例见 [Pandoc - Math Demos](https:
 
 ### Pandoc
 
-Pandoc 的使用可以参考 [Pandoc - Pandoc User's Guide](https://www.pandoc.org/MANUAL.html) 。之前使用的 Pandoc 命令行参数分别是以下作用：
+Pandoc 的使用可以参考 [Pandoc - Pandoc User's Guide](https://pandoc.org/MANUAL.html) 。之前使用的 Pandoc 命令行参数分别是以下作用：
 
 | 命令行参数          | 作用                                         |
 |:--------------------|:---------------------------------------------|
@@ -95,11 +100,11 @@ Pandoc 的使用可以参考 [Pandoc - Pandoc User's Guide](https://www.pandoc.o
 | --reference-doc xxx | 指定格式文件                                 |
 | --bibliography xxx  | 指定参考文献文件                             |
 
-更多命令行参数及其用法，参见 [Pandoc - Pandoc User's Guide](https://www.pandoc.org/MANUAL.html) 中 [Options](https://www.pandoc.org/MANUAL.html#options) 一章。
+更多命令行参数及其用法，参见 [Pandoc - Pandoc User's Guide](https://pandoc.org/MANUAL.html) 中 [Options](https://pandoc.org/MANUAL.html#options) 一章。
 
 ### Pandoc's Markdown
 
-编写论文所需的 Markdown 在原有的语法基础上添加了一些 Pandoc 特有的语法，可以参考 [Pandoc - Pandoc User's Guide](https://www.pandoc.org/MANUAL.html) 中 [Pandoc's Markdown](https://www.pandoc.org/MANUAL.html#pandocs-markdown) 一章。
+编写论文所需的 Markdown 在原有的语法基础上添加了一些 Pandoc 特有的语法，可以参考 [Pandoc - Pandoc User's Guide](https://pandoc.org/MANUAL.html) 中 [Pandoc's Markdown](https://pandoc.org/MANUAL.html#pandocs-markdown) 一章。
 
 相关示例见 [Pandoc - Demos](https://pandoc.org/demos.html)
 
@@ -109,7 +114,7 @@ Pandoc 的使用可以参考 [Pandoc - Pandoc User's Guide](https://www.pandoc.o
 
 有关 [Lua](http://www.lua.org/home.html) 语法，可以参考 [Programming in Lua](http://www.lua.org/pil/) 或 [Lua: reference manuals](https://www.lua.org/manual/) 。
 
-如果不想学习 Lua ，可以参考 [Pandoc - Pandoc filters](https://www.pandoc.org/filters.html) 用其它语言创建 Filter 。
+如果不想学习 Lua ，可以参考 [Pandoc - Pandoc filters](https://pandoc.org/filters.html) 用其它语言创建 Filter 。
 
 ### OOXML
 
