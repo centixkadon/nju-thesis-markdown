@@ -175,7 +175,7 @@ Markdown 作为一门从命名就可以看出与 Markup Language 针锋相对的
 
 ### 文件来源
 
-| 文件                                      | 来源                                                       |
-|:------------------------------------------|:-----------------------------------------------------------|
-| thesis/csl/chinese-gb7714-2005-numeric.csl | [Zotero Style Repository](https://www.zotero.org/styles)   |
-| thesis/nju.png                             | [视觉形象规范化标准](https://www.nju.edu.cn/3647/list.htm) |
+| 文件                                       | 来源                                                                                                                                                   |
+|:-------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| thesis/csl/chinese-gb7714-2005-numeric.csl | [Zotero Style Repository](https://www.zotero.org/styles), [Github - citation-style-language/styles](https://github.com/citation-style-language/styles) |
+| thesis/nju.png                             | [视觉形象规范化标准](https://www.nju.edu.cn/3647/list.htm)                                                                                             |

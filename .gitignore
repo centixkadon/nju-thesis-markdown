@@ -1,7 +1,7 @@
 
 test
 
-thesis/sample.docx
-thesis/sample.json
-thesis/sample.pdf
+thesis/sample*.docx
+thesis/sample*.json
+thesis/sample*.pdf
 thesis/thesis.log

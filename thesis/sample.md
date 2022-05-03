@@ -46,6 +46,38 @@ abstract: |
   而太极剑就连无忌哥哥都忘得一干二净，论文无法找到资料导致研究难以继续；
   圣火令心法是世间少有的邪法，连无忌哥哥用了都不禁心生邪恶，普通人更应该远离。
   所以这些武功，包括上文提到的太极拳和九阳神功，其实都不会在正文中提到。
+
+  ` `
+
+  ` `
+
+  ` `
+
+  ` `
+
+  ` `
+
+  ` `
+
+  ` `
+
+  ` `
+
+  ` `
+
+  ` `
+
+  ` `
+
+  ` `
+
+  ` `
+
+  ` `
+
+  ` `
+
+  ` `
 keywords: 太极拳，九阳神功，乾坤大挪移，太极剑，圣火令心法
 title-en: Tongguo Zai Changbiaoti Zhong Jiaru Qiguaide Geshi Lai Yanshi Fengmian Zhong Ruhe Chuli Gailizi Ca^2+^ Yiji Blahblah O
 abstract-en: |
@@ -72,9 +104,13 @@ abstract-en: |
   Now the paragraph begins to make no sense, and the only advantage is that the sentences are very long.
   This sentence is even longer than the sentence before this sentence, because this sentence adds a because.
   This sentence has the same size as this sentence you are reading, because the two sentences are the same.
+
+  ` `
+
+  ` `
 keywords-en: Tai Chi Fist, Jiuyang God Gong, Qiankun Great Move, Tai Chi Sword, Flame Token Mental
 
-csl: csl/chinese-gb7714-2005-numeric.csl
+csl: csl/chinese-gb7714-2005-numeric.20211125121151.en.csl
 bibliography: sample.bib
 ...
 
@@ -100,6 +136,19 @@ $$F\left( x \right) = \int_{-∞}^{x}{f\left( t \right) \, \mathrm{d}t}$$
 公式引用需要保证前缀为“eq-”：[@eq-eee]。
 公式语法可以参考 https://en.wikibooks.org/wiki/LaTeX/Mathematics ，有些支持有些不支持。
 
+有的时候需要写写代码，以拉低论文平均水平为代价，大大提升论文篇幅：
+
+```c++
+#include <iostream>
+
+using namespace std;
+
+int mian() {
+  cout << "compile error" << endl;
+}
+
+```
+
 ## 插入图片与图片引用
 
 ![图片描述](nju.png){#fig-fff width=100}
@@ -112,7 +161,7 @@ $$F\left( x \right) = \int_{-∞}^{x}{f\left( t \right) \, \mathrm{d}t}$$
 1 2 3
 4 5 6
 - - -
-: 表格描述 {#tbl-ttt}
+: [表格描述]{#tbl-ttt}
 
 表格引用需要保证前缀为“tbl-”：[@tbl-ttt]
 

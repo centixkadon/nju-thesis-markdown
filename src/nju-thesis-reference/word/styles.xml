@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<w:styles xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" 
+<w:styles xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
   xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
   <w:docDefaults>
     <w:pPrDefault>
@@ -197,6 +197,7 @@
     <w:qFormat />
     <w:pPr>
       <w:jc w:val="both" />
+      <w:spacing w:line="480" />
       <w:tabs>
         <w:tab w:val="right" w:pos="8307" />
       </w:tabs>
@@ -577,6 +578,12 @@
     <w:basedOn w:val="Normal" />
     <w:next w:val="Bibliography" />
     <w:qFormat />
+    <w:pPr>
+      <w:tabs>
+        <w:tab w:val="left" w:pos="480" />
+      </w:tabs>
+      <w:jc w:val="both" />
+    </w:pPr>
   </w:style>
   <w:style w:type="paragraph" w:styleId="BlockText">
     <w:name w:val="Block Text" />
@@ -643,6 +650,22 @@
       <w:sz w:val="18" />
       <w:szCs w:val="18" />
     </w:rPr>
+  </w:style>
+
+  <!-- ================================================================ 代码 -->
+  <w:style w:type="paragraph" w:customStyle="1" w:styleId="SourceCode">
+    <w:name w:val="Source Code" />
+    <w:basedOn w:val="Normal" />
+    <w:qFormat />
+    <w:pPr>
+      <w:widowControl w:val="0" />
+      <w:pBdr>
+        <w:top w:val="single" w:sz="4" w:space="4" w:color="auto" />
+        <w:left w:val="single" w:sz="4" w:space="4" w:color="auto" />
+        <w:bottom w:val="single" w:sz="4" w:space="4" w:color="auto" />
+        <w:right w:val="single" w:sz="4" w:space="4" w:color="auto" />
+      </w:pBdr>
+    </w:pPr>
   </w:style>
 
   <w:style w:type="character" w:default="1" w:styleId="DefaultParagraphFont">

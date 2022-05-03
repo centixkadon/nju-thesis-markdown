@@ -319,10 +319,10 @@
       </w:r>
     </w:p>
     <w:sectPr>
-      <w:headerReference w:type="default" r:id="rId9" />
-      <w:footerReference w:type="default" r:id="rId10" />
+      <w:type w:val="oddPage" />
       <w:pgSz w:w="11907" w:h="16840" />
       <w:pgMar w:top="1440" w:right="1800" w:bottom="1440" w:left="1800" w:header="720" w:footer="720" w:gutter="0" />
+      <w:pgNumType w:fmt="demical" />
       <w:cols w:space="720" />
     </w:sectPr>
   </w:body>

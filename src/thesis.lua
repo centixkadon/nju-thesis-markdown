@@ -168,12 +168,12 @@ function inlinestoattr(inlines)
       if string.sub(s,-1) == "}" then
 
         s = s:sub(2,-2)
-        local identifier = s:match("#([%w-_]+)") or ""
+        local identifier = s:match("#([^%s%{%}]+)") or ""
         local classes = {}
         local attributes = {}
-        for class in s:gmatch("%.([%w-_]+)") do table.insert(classes, class) end
-        for key, value in s:gmatch("([%w-_]+)=([%w-_]+)") do attributes[key] = value end
-        for key, value in s:gmatch('([%w-_]+)="([%w%s-_]+)"') do attributes[key] = value end
+        for class in s:gmatch("%.([^%s%{%}]+)") do table.insert(classes, class) end
+        for key, value in s:gmatch("([^%s%{%}]+)=([^%s%{%}]+)") do attributes[key] = value end
+        for key, value in s:gmatch('([^%s%{%}]+)="([^%{%}]+)"') do attributes[key] = value end
 
         inlines:erase(i)
         for i = i-1, 1, -1 do
@@ -235,6 +235,31 @@ local filters = pandoc.List{}
 local raws = {
   tab = pandoc.RawInline("openxml", '<w:r><w:tab /></w:r>'),
   page = pandoc.RawInline("openxml", '<w:br w:type="page" />'),
+  section = pandoc.RawBlock("openxml", [[
+    <w:p><w:pPr><w:sectPr>
+      <w:pgSz w:w="11907" w:h="16840" />
+      <w:pgMar w:top="1440" w:right="1800" w:bottom="1440" w:left="1800" w:header="720" w:footer="720" w:gutter="0" />
+      <w:cols w:space="720" />
+    </w:sectPr></w:pPr></w:p>
+  ]]),
+  section1 = pandoc.RawBlock("openxml", [[
+    <w:p><w:pPr><w:sectPr>
+      <w:footerReference w:type="default" r:id="rId10" />
+      <w:pgSz w:w="11907" w:h="16840" />
+      <w:pgMar w:top="1440" w:right="1800" w:bottom="1440" w:left="1800" w:header="720" w:footer="720" w:gutter="0" />
+      <w:pgNumType w:fmt="upperRoman" w:start="1" />
+      <w:cols w:space="720" />
+    </w:sectPr></w:pPr></w:p>
+  ]]),
+  section2 = pandoc.RawBlock("openxml", [[
+    <w:p><w:pPr><w:sectPr>
+      <w:type w:val="oddPage" />
+      <w:pgSz w:w="11907" w:h="16840" />
+      <w:pgMar w:top="1440" w:right="1800" w:bottom="1440" w:left="1800" w:header="720" w:footer="720" w:gutter="0" />
+      <w:pgNumType w:fmt="upperRoman" />
+      <w:cols w:space="720" />
+    </w:sectPr></w:pPr></w:p>
+  ]]),
 }
 
 if configuration:includes("word_count") then
@@ -345,7 +370,7 @@ if configuration:includes("cover") then
 
           pandoc.Para(table.rep(pandoc.LineBreak(), 26)),
           message({ { "学号", "number" }, { "论文答辩日期", "date" }, { "指导教师", "msg-sign" } }, "：", { 23, 5, 72 }, { "Inside Front Cover Label", "Inside Front Cover Text" }),
-          pandoc.Para({ raws.page }),
+          raws.section,
 
           pandoc.Div({
             pandoc.Para({ pandoc.Str("南京大学研究生毕业论文中文摘要首页用纸") }),
@@ -362,7 +387,7 @@ if configuration:includes("cover") then
           }, { ["custom-style"]="Abstract Underline Message" }),
           pandoc.Div(metavalues["abstract"], { ["custom-style"]="Abstract" }),
           pandoc.Div(pandoc.Para({ pandoc.Str("关键词："), pandoc.Span(metavalues["keywords"]) }), { ["custom-style"]="Keywords" }),
-          pandoc.Para({ raws.page }),
+          raws.section1,
 
           pandoc.Div({
             pandoc.Para({ pandoc.Str("南京大学研究生毕业论文英文摘要首页用纸") }),
@@ -376,6 +401,7 @@ if configuration:includes("cover") then
           }, { ["custom-style"]="Abstract Message" }),
           pandoc.Div(metavalues["abstract-en"], { ["custom-style"]="Abstract" }),
           pandoc.Div(pandoc.Para({ pandoc.Str("KEYWORDS: "), pandoc.Span(metavalues["keywords-en"]) }), { ["custom-style"]="Keywords" }),
+          raws.section2,
         }
 
         cover:extend(elem.blocks)
@@ -420,9 +446,12 @@ if configuration:includes("numbering") then
         local tcpr = widthpcts:map(function (x) return pandoc.RawBlock("openxml", string.format('<w:tcPr><w:tcW w:w="%q" w:type="pct"/></w:tcPr>', x)) end)
 
         local attr = inlinestoattr(elem.content)
+        if attr then
+          io.write(string.format("eq identifier: %q\n", attr.identifier))
+        end
         local eqno = {
           pandoc.Str("("),
-          pandoc.RawInline("field", string.format('{={Section \\* MergeFormat|}-1|%q}', number[1])),
+          pandoc.RawInline("field", string.format('{={Section \\* MergeFormat|}-4|%q}', number[1])),
           pandoc.Str("."),
           pandoc.RawInline("field", string.format("{Seq equations|%q}", number.eq)),
           pandoc.Str(")"),
@@ -451,6 +480,7 @@ if configuration:includes("numbering") then
         if #image.caption > 0 then
           number.fig = number.fig + 1
 
+          io.write(string.format("fig identifier: %q\n", image.identifier))
           if image.identifier and image.identifier:sub(1,4) == "fig-" then
             numbers[image.identifier] = string.format("图%s.%s", number[1], number.fig)
             image.caption = { pandoc.Span(image.caption, { id=image.identifier }) }
@@ -467,10 +497,9 @@ if configuration:includes("numbering") then
         number.tbl = number.tbl + 1
 
         local plain = elem.caption.long[1]
-        local attr = inlinestoattr(plain.content)
-        if attr and attr.identifier and attr.identifier:sub(1,4) == "tbl-" then
-          numbers[attr.identifier] = string.format("表%s.%s", number[1], number.tbl)
-          plain.content = { pandoc.Span(plain.content, { id=attr.identifier }) }
+        io.write(string.format("tbl identifier: %q\n", plain.content[1].identifier))
+        if plain and #plain.content > 0 and plain.content[1].identifier:sub(1,4) == "tbl-" then
+          numbers[plain.content[1].identifier] = string.format("表%s.%s", number[1], number.tbl)
         end
       end
 
@@ -483,13 +512,22 @@ if configuration:includes("numbering") then
     Cite = function (elem)
       local identifier = elem.citations[1].id
       if string.sub(identifier, 1, 3) == "eq-" then
+        if not numbers[identifier] then
+          io.write(string.format("Equation not defined: %q\n", identifier))
+        end
         return {
           pandoc.Str("式"),
           pandoc.RawInline("field", string.format("{Ref %s|%s}", identifier, numbers[identifier] or "Error! Equation not defined")),
         }
       elseif string.sub(identifier, 1, 4) == "fig-" then
+        if not numbers[identifier] then
+          io.write(string.format("Figure not defined: %q\n", identifier))
+        end
         return { pandoc.RawInline("field", string.format("{Ref %s \\r|%s}", identifier, numbers[identifier] or "Error! Figure not defined")) }
       elseif string.sub(identifier, 1, 4) == "tbl-" then
+        if not numbers[identifier] then
+          io.write(string.format("Table not defined: %q\n", identifier))
+        end
         return { pandoc.RawInline("field", string.format("{Ref %s \\r|%s}", identifier, numbers[identifier] or "Error! Table not defined")) }
       end
     end,
@@ -501,7 +539,7 @@ if configuration:includes("section") then
   local number = { 0, 0, 0, 0, 0, 0 }
   local sectionProperties = {
     [[
-      <w:p><w:r><w:br w:type="page" /></w:r></w:p><w:sdt>
+      <w:sdt>
         <w:sdtPr><w:docPartObj><w:docPartGallery w:val="Table of Contents" /><w:docPartUnique /></w:docPartObj></w:sdtPr>
         <w:sdtContent>
           <w:p><w:pPr><w:pStyle w:val="TOCHeading" /></w:pPr><w:r><w:t xml:space="preserve">目录</w:t></w:r></w:p>
@@ -510,18 +548,17 @@ if configuration:includes("section") then
           <w:fldChar w:fldCharType="separate" /><w:fldChar w:fldCharType="end" /></w:r></w:p>
         </w:sdtContent>
       </w:sdt><w:p><w:pPr><w:sectPr>
-        <w:footerReference w:type="default" r:id="rId10" />
+        <w:type w:val="oddPage" />
         <w:pgSz w:w="11907" w:h="16840" />
         <w:pgMar w:top="1440" w:right="1800" w:bottom="1440" w:left="1800" w:header="720" w:footer="720" w:gutter="0" />
-        <w:pgNumType w:fmt="upperRoman" w:start="0" />
+        <w:pgNumType w:fmt="upperRoman" />
         <w:cols w:space="720" />
-        <w:titlePg />
       </w:sectPr></w:pPr></w:p>
     ]],
     [[
       <w:p><w:pPr><w:sectPr>
         <w:headerReference w:type="default" r:id="rId9" />
-        <w:footerReference w:type="default" r:id="rId10" />
+        <w:type w:val="oddPage" />
         <w:pgSz w:w="11907" w:h="16840" />
         <w:pgMar w:top="1440" w:right="1800" w:bottom="1440" w:left="1800" w:header="720" w:footer="720" w:gutter="0" />
         <w:pgNumType w:fmt="demical" w:start="1" />
@@ -530,10 +567,10 @@ if configuration:includes("section") then
     ]],
     [[
       <w:p><w:pPr><w:sectPr>
-        <w:headerReference w:type="default" r:id="rId9" />
-        <w:footerReference w:type="default" r:id="rId10" />
+        <w:type w:val="oddPage" />
         <w:pgSz w:w="11907" w:h="16840" />
         <w:pgMar w:top="1440" w:right="1800" w:bottom="1440" w:left="1800" w:header="720" w:footer="720" w:gutter="0" />
+        <w:pgNumType w:fmt="demical" />
         <w:cols w:space="720" />
       </w:sectPr></w:pPr></w:p>
     ]],
