@@ -22,10 +22,13 @@ Life is short, you need Markdown.
   - GB7714 文后参考文献著录规则
 - [2020届本科毕业论文工作手册](https://jw.nju.edu.cn/_upload/article/files/a2/17/e4e5fb414ddf8d64accea8e63e4a/df778a5f-c871-488f-8ba8-de6a0a02e700.rar)
 - [2021届本科毕业论文工作手册](https://jw.nju.edu.cn/_upload/article/files/8c/b2/1e82afc4461da5b6c5edbb48d8a5/741692c3-ccf6-43ae-8413-9df21732f8dd.rar)
+- [2022届本科毕业论文工作手册](https://jw.nju.edu.cn/_upload/article/files/44/7d/c7eae73b4fe58eff8acb02d9c1aa/d267ac9d-6a4d-4b47-adb8-1aacc1751dd3.rar)
 
 因学校会清理过期网页，但未清理过期文件，所以引用了下载文件的链接。
 
-比较后发现2020届和2021届本科毕业论文工作手册的格式要求没有区别。
+比较后发现2020届和2021届的撰写规范没有区别。
+
+比较后发现2021届和2022届的撰写规范没有区别，但是2022届多了一个毕业论文 Word 模板，里面多了亿点点小细节，今年来不及支持了。好在模板仅供参考，不严格遵守似乎问题不大。另外需要吐槽的是，2022届手册十分混乱，文件大量重复，需要仔细揣摩手册整理人员的心理，难以阅读理解。
 
 
 ## 简单开始
